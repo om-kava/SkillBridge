@@ -257,7 +257,8 @@
 
     <div style="display: flex; justify-content: flex-end; gap: 12px;">
       {% if analysis %}
-      <button onclick="generateGapPack({{ analysis.id }})" id="btnGapPack" class="btn-nav-primary"
+      <button type="button" id="btnGapPack" class="btn-nav-primary" data-analysis-id="{{ analysis.id }}"
+        onclick="generateGapPack(this.dataset.analysisId)"
         style="padding: 12px 20px; font-size: 13px; background: rgba(239, 68, 68, 0.25); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.5);">
         <i class="fa-solid fa-bullseye"></i> Drill Missing Skill Gaps
       </button>
@@ -356,7 +357,7 @@
       </a>
       {% endif %}
 
-      <button class="btn-coach" onclick="openCoachModal({{ q.id }})"
+      <button type="button" class="btn-coach" onclick="openCoachModal('{{ q.id }}')"
         style="background: var(--bone); color: var(--smoky-black); font-weight: 700;">
         <i class="fa-solid fa-robot"></i> Practice Answer with AI Coach
       </button>
