@@ -1,6 +1,6 @@
 """
 Django settings for django_chatbot project.
-Production Ready Configuration with WhiteNoise, Environment Variables, and Gunicorn Support.
+Production Ready Configuration with WhiteNoise, Environment Variables, DRF, and Gunicorn Support.
 """
 
 from pathlib import Path
@@ -30,6 +30,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_simplejwt',
     'chatbot',
     'skillbridge',
 ]
@@ -117,3 +119,10 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 1209600  # 2 weeks in seconds
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}
