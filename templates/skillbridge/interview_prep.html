@@ -5,68 +5,179 @@
 {% block styles %}
 <style>
   .q-card {
-    background: var(--smoky-glass); border: 1px solid var(--border-olive); border-radius: 20px; padding: 24px; margin-bottom: 20px;
-    transition: all 0.25s ease; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    background: var(--smoky-glass);
+    border: 1px solid var(--border-olive);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 20px;
+    transition: all 0.25s ease;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   }
-  .q-card:hover { border-color: var(--bone); transform: translateY(-2px); }
+
+  .q-card:hover {
+    border-color: var(--bone);
+    transform: translateY(-2px);
+  }
 
   .diff-badge {
-    padding: 4px 12px; border-radius: 12px; font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
   }
-  .diff-beginner { background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); color: #a7f3d0; }
-  .diff-intermediate { background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.4); color: #fde68a; }
-  .diff-advanced { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; }
+
+  .diff-beginner {
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #a7f3d0;
+  }
+
+  .diff-intermediate {
+    background: rgba(245, 158, 11, 0.2);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    color: #fde68a;
+  }
+
+  .diff-advanced {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+  }
 
   .filter-btn {
-    padding: 8px 16px; background: rgba(86, 84, 73, 0.25); border: 1px solid var(--border-olive);
-    border-radius: 20px; color: var(--bone); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
+    padding: 8px 16px;
+    background: rgba(86, 84, 73, 0.25);
+    border: 1px solid var(--border-olive);
+    border-radius: 20px;
+    color: var(--bone);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
   }
-  .filter-btn.active, .filter-btn:hover {
-    background: var(--bone); color: var(--smoky-black); font-weight: 700;
+
+  .filter-btn.active,
+  .filter-btn:hover {
+    background: var(--bone);
+    color: var(--smoky-black);
+    font-weight: 700;
   }
 
   .btn-coach {
-    padding: 8px 16px; background: rgba(216, 207, 188, 0.15); border: 1px solid var(--border-olive);
-    border-radius: 18px; color: var(--floral-white); font-size: 12.5px; font-weight: 600; cursor: pointer; text-decoration: none;
-    display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease; margin-top: 10px;
+    padding: 8px 16px;
+    background: rgba(216, 207, 188, 0.15);
+    border: 1px solid var(--border-olive);
+    border-radius: 18px;
+    color: var(--floral-white);
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    margin-top: 10px;
   }
+
   .btn-coach:hover {
-    background: var(--bone); color: var(--smoky-black); transform: translateY(-1px);
+    background: var(--bone);
+    color: var(--smoky-black);
+    transform: translateY(-1px);
   }
 
   .step-label {
-    display: block; font-size: 11.5px; font-weight: 700; text-transform: uppercase; color: var(--bone); margin-bottom: 6px; letter-spacing: 0.5px;
+    display: block;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--bone);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
   }
 
   /* Coach Modal */
   .modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(12px);
-    display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(12px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
   }
-  .modal-overlay.active { display: flex; }
+
+  .modal-overlay.active {
+    display: flex;
+  }
 
   .modal-glass {
-    background: var(--smoky-card); border: 1px solid var(--border-bone);
-    border-radius: 24px; width: 100%; max-width: 680px; padding: 32px;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.85); position: relative; animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    background: var(--smoky-card);
+    border: 1px solid var(--border-bone);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 680px;
+    padding: 32px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.85);
+    position: relative;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .focus-chip {
-    padding: 4px 12px; background: rgba(216, 207, 188, 0.15); border: 1px solid rgba(216, 207, 188, 0.3);
-    border-radius: 12px; font-size: 12px; color: var(--floral-white); font-weight: 600; display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px;
+    background: rgba(216, 207, 188, 0.15);
+    border: 1px solid rgba(216, 207, 188, 0.3);
+    border-radius: 12px;
+    font-size: 12px;
+    color: var(--floral-white);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
 
   @keyframes slideUp {
-    from { transform: translateY(30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from {
+      transform: translateY(30px);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
   }
 
   @media (max-width: 768px) {
-    .q-card { padding: 18px 14px; border-radius: 16px; }
-    .modal-glass { padding: 20px 16px; max-height: 90vh; overflow-y: auto; border-radius: 18px; }
-    .filter-btn { padding: 6px 12px; font-size: 12px; }
-    .btn-coach { width: 100%; justify-content: center; }
+    .q-card {
+      padding: 18px 14px;
+      border-radius: 16px;
+    }
+
+    .modal-glass {
+      padding: 20px 16px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 18px;
+    }
+
+    .filter-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    .btn-coach {
+      width: 100%;
+      justify-content: center;
+    }
   }
 </style>
 {% endblock %}
@@ -78,18 +189,23 @@
       360° & Company-Wise Interview Preparation Hub
     </h1>
     <p style="font-size: 14.5px; color: var(--bone); opacity: 0.85;">
-      Fetch 10 round-specific interview questions, attached study resources, and executive company intelligence for ANY company & target role
+      Fetch 10 round-specific interview questions, attached study resources, and executive company intelligence for ANY
+      company & target role
     </p>
   </div>
 
   <!-- Step-by-Step Interactive Company & Role Selector Card -->
-  <div class="glass-panel" style="margin-bottom: 28px; padding: 28px; border-color: var(--bone); background: rgba(216, 207, 188, 0.06);">
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--border-olive);">
-      <div style="width: 42px; height: 42px; background: rgba(86, 84, 73, 0.35); border: 1px solid var(--bone); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--floral-white);">
+  <div class="glass-panel"
+    style="margin-bottom: 28px; padding: 28px; border-color: var(--bone); background: rgba(216, 207, 188, 0.06);">
+    <div
+      style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--border-olive);">
+      <div
+        style="width: 42px; height: 42px; background: rgba(86, 84, 73, 0.35); border: 1px solid var(--bone); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--floral-white);">
         <i class="fa-solid fa-sliders"></i>
       </div>
       <div>
-        <h3 style="font-family: var(--font-serif); font-size: 20px; color: var(--floral-white);">3-Step Interview Pack Generator</h3>
+        <h3 style="font-family: var(--font-serif); font-size: 20px; color: var(--floral-white);">3-Step Interview Pack
+          Generator</h3>
         <p style="font-size: 13px; color: var(--bone); opacity: 0.8;">Select target company, role, and round focus</p>
       </div>
     </div>
@@ -98,7 +214,8 @@
       <!-- Step 1: Company Selection -->
       <div>
         <label class="step-label">Step 1: Target Company</label>
-        <select id="companyPresetSelect" onchange="onCompanyPresetChange()" style="width: 100%; padding: 12px 14px; margin-bottom: 8px;">
+        <select id="companyPresetSelect" onchange="onCompanyPresetChange()"
+          style="width: 100%; padding: 12px 14px; margin-bottom: 8px;">
           <option value="TCS">TCS (Digital & NQT Drive)</option>
           <option value="Streebo">Streebo</option>
           <option value="Crest Data Systems">Crest Data Systems</option>
@@ -112,13 +229,16 @@
           <option value="Amazon">Amazon</option>
           <option value="custom">✍️ Custom Company...</option>
         </select>
-        <input type="text" id="companyCustomInput" placeholder="Enter company name..." style="display: none; width: 100%; padding: 12px 14px; background: rgba(17, 18, 13, 0.9); border: 1px solid var(--border-olive); border-radius: 12px; color: var(--floral-white); outline: none;">
+        <input type="text" id="companyCustomInput" placeholder="Enter company name..."
+          style="display: none; width: 100%; padding: 12px 14px; background: rgba(17, 18, 13, 0.9); border: 1px solid var(--border-olive); border-radius: 12px; color: var(--floral-white); outline: none;">
       </div>
 
       <!-- Step 2: Role Selection -->
       <div>
         <label class="step-label">Step 2: Target Role</label>
-        <input type="text" id="roleInput" placeholder="e.g. Python Backend Developer" value="{{ analysis.job_description.title|default:profile.target_role }}" style="width: 100%; padding: 12px 14px; background: rgba(17, 18, 13, 0.9); border: 1px solid var(--border-olive); border-radius: 12px; color: var(--floral-white); outline: none;">
+        <input type="text" id="roleInput" placeholder="e.g. Python Backend Developer"
+          value="{{ analysis.job_description.title|default:profile.target_role }}"
+          style="width: 100%; padding: 12px 14px; background: rgba(17, 18, 13, 0.9); border: 1px solid var(--border-olive); border-radius: 12px; color: var(--floral-white); outline: none;">
       </div>
 
       <!-- Step 3: Round Focus Selection -->
@@ -137,38 +257,49 @@
 
     <div style="display: flex; justify-content: flex-end; gap: 12px;">
       {% if analysis %}
-        <button onclick="generateGapPack({{ analysis.id }})" id="btnGapPack" class="btn-nav-primary" style="padding: 12px 20px; font-size: 13px; background: rgba(239, 68, 68, 0.25); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.5);">
-          <i class="fa-solid fa-bullseye"></i> Drill Missing Skill Gaps
-        </button>
+      <button onclick="generateGapPack({{ analysis.id }})" id="btnGapPack" class="btn-nav-primary"
+        style="padding: 12px 20px; font-size: 13px; background: rgba(239, 68, 68, 0.25); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.5);">
+        <i class="fa-solid fa-bullseye"></i> Drill Missing Skill Gaps
+      </button>
       {% endif %}
-      <button onclick="generateCompanyPack()" id="btnCompanyPack" class="btn-nav-primary" style="padding: 12px 28px; font-size: 14px;">
+      <button onclick="generateCompanyPack()" id="btnCompanyPack" class="btn-nav-primary"
+        style="padding: 12px 28px; font-size: 14px;">
         <i class="fa-solid fa-wand-magic-sparkles"></i> Fetch 10 AI Questions & Resources
       </button>
     </div>
   </div>
 
   <!-- Dynamic Company Executive Summary Card -->
-  <div id="companySummaryCard" class="glass-panel" style="margin-bottom: 28px; padding: 24px; display: none; background: rgba(17, 18, 13, 0.9); border-color: var(--bone);">
-    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
+  <div id="companySummaryCard" class="glass-panel"
+    style="margin-bottom: 28px; padding: 24px; display: none; background: rgba(17, 18, 13, 0.9); border-color: var(--bone);">
+    <div
+      style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
       <div style="display: flex; align-items: center; gap: 12px;">
         <i class="fa-solid fa-building-user" style="font-size: 24px; color: var(--bone);"></i>
         <div>
-          <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--bone); opacity: 0.7;">Executive Company Intelligence</span>
-          <h3 style="font-family: var(--font-serif); font-size: 20px; color: var(--floral-white);" id="companyTitleText">TCS Placement Overview</h3>
+          <span
+            style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--bone); opacity: 0.7;">Executive
+            Company Intelligence</span>
+          <h3 style="font-family: var(--font-serif); font-size: 20px; color: var(--floral-white);"
+            id="companyTitleText">TCS Placement Overview</h3>
         </div>
       </div>
     </div>
 
-    <p style="font-size: 14px; color: var(--bone); opacity: 0.9; line-height: 1.6; margin-bottom: 16px;" id="companySummaryText"></p>
+    <p style="font-size: 14px; color: var(--bone); opacity: 0.9; line-height: 1.6; margin-bottom: 16px;"
+      id="companySummaryText"></p>
 
     <div>
-      <span style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--bone); opacity: 0.8; margin-right: 10px;">Primary Evaluation Domains:</span>
+      <span
+        style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--bone); opacity: 0.8; margin-right: 10px;">Primary
+        Evaluation Domains:</span>
       <div id="companyFocusChips" style="display: inline-flex; gap: 8px; flex-wrap: wrap; margin-top: 6px;"></div>
     </div>
   </div>
 
   <!-- Round Categories Filter Tabs -->
-  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
+  <div
+    style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
     <div style="display: flex; gap: 8px; flex-wrap: wrap;">
       <button class="filter-btn active" onclick="filterCat('all', this)">All Questions (10)</button>
       <button class="filter-btn" onclick="filterCat('technical', this)">💻 Technical</button>
@@ -179,76 +310,94 @@
       <button class="filter-btn" onclick="filterCat('skill_gap', this)">🎯 Skill Gaps</button>
     </div>
 
-    <button onclick="toggleFlashcardMode()" id="btnFlashcard" class="btn-nav-primary" style="padding: 8px 16px; font-size: 12.5px; background: rgba(86, 84, 73, 0.3); border: 1px solid var(--border-olive);">
+    <button onclick="toggleFlashcardMode()" id="btnFlashcard" class="btn-nav-primary"
+      style="padding: 8px 16px; font-size: 12.5px; background: rgba(86, 84, 73, 0.3); border: 1px solid var(--border-olive);">
       <i class="fa-solid fa-layer-group"></i> 3D Flashcard Revision Mode
     </button>
   </div>
 
   <!-- Questions Display Grid -->
   {% if questions %}
-    {% for q in questions %}
-      <div class="q-card q-item" data-cat="{{ q.category }}" id="qCard_{{ q.id }}">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-          <span style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--bone); opacity: 0.85;">
-            <i class="fa-solid fa-tag"></i> {{ q.get_category_display }} Round
-          </span>
-          <span class="diff-badge diff-{{ q.difficulty }}">{{ q.difficulty }}</span>
-        </div>
-
-        <h3 style="font-size: 18.5px; color: var(--floral-white); margin-bottom: 14px; line-height: 1.5;" id="qText_{{ q.id }}">
-          {{ q.question }}
-        </h3>
-
-        {% if q.expected_topics %}
-          <div class="topic-box" style="padding: 14px 18px; background: rgba(86, 84, 73, 0.2); border: 1px solid var(--border-olive); border-radius: 12px; font-size: 13.5px; margin-bottom: 14px;">
-            <strong style="color: var(--floral-white);"><i class="fa-solid fa-lightbulb"></i> Expected Key Concepts:</strong>
-            <p style="color: var(--bone); opacity: 0.9; margin-top: 4px;">{{ q.expected_topics }}</p>
-          </div>
-        {% endif %}
-
-        <!-- Attached Study Resources for Question -->
-        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding-top: 12px; border-top: 1px solid rgba(86, 84, 73, 0.3);">
-          {% if q.resource_url %}
-            <a href="{{ q.resource_url }}" target="_blank" class="btn-coach" style="background: rgba(86, 84, 73, 0.35); border-color: var(--border-olive);">
-              <i class="fa-solid fa-graduation-cap" style="color: var(--bone);"></i>
-              <span>Study Guide: <strong>{{ q.resource_title|default:"Study Guide & Tutorial" }}</strong> &rarr;</span>
-            </a>
-          {% else %}
-            <a href="https://geeksforgeeks.org/" target="_blank" class="btn-coach" style="background: rgba(86, 84, 73, 0.35); border-color: var(--border-olive);">
-              <i class="fa-solid fa-book-bookmark"></i> Study Guide & Tutorial &rarr;
-            </a>
-          {% endif %}
-
-          <button class="btn-coach" onclick="openCoachModal({{ q.id }})" style="background: var(--bone); color: var(--smoky-black); font-weight: 700;">
-            <i class="fa-solid fa-robot"></i> Practice Answer with AI Coach
-          </button>
-        </div>
-      </div>
-    {% endfor %}
-  {% else %}
-    <div class="glass-panel" style="text-align: center; padding: 60px;">
-      <i class="fa-solid fa-comments" style="font-size: 44px; color: var(--bone); margin-bottom: 16px;"></i>
-      <h3 style="font-family: var(--font-serif); font-size: 24px; color: var(--floral-white); margin-bottom: 8px;">No Interview Questions Loaded Yet</h3>
-      <p style="font-size: 14px; color: var(--bone); opacity: 0.8; margin-bottom: 24px;">Configure your target company and role above, then click <strong>"Fetch 10 AI Questions & Resources"</strong>!</p>
+  {% for q in questions %}
+  <div class="q-card q-item" data-cat="{{ q.category }}" id="qCard_{{ q.id }}">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+      <span style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--bone); opacity: 0.85;">
+        <i class="fa-solid fa-tag"></i> {{ q.get_category_display }} Round
+      </span>
+      <span class="diff-badge diff-{{ q.difficulty }}">{{ q.difficulty }}</span>
     </div>
+
+    <h3 style="font-size: 18.5px; color: var(--floral-white); margin-bottom: 14px; line-height: 1.5;"
+      id="qText_{{ q.id }}">
+      {{ q.question }}
+    </h3>
+
+    {% if q.expected_topics %}
+    <div class="topic-box"
+      style="padding: 14px 18px; background: rgba(86, 84, 73, 0.2); border: 1px solid var(--border-olive); border-radius: 12px; font-size: 13.5px; margin-bottom: 14px;">
+      <strong style="color: var(--floral-white);"><i class="fa-solid fa-lightbulb"></i> Expected Key Concepts:</strong>
+      <p style="color: var(--bone); opacity: 0.9; margin-top: 4px;">{{ q.expected_topics }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Attached Study Resources for Question -->
+    <div
+      style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding-top: 12px; border-top: 1px solid rgba(86, 84, 73, 0.3);">
+      {% if q.resource_url %}
+      <a href="{{ q.resource_url }}" target="_blank" class="btn-coach"
+        style="background: rgba(86, 84, 73, 0.35); border-color: var(--border-olive);">
+        <i class="fa-solid fa-graduation-cap" style="color: var(--bone);"></i>
+        <span>Study Guide: <strong>{{ q.resource_title|default:"Study Guide & Tutorial" }}</strong> &rarr;</span>
+      </a>
+      {% else %}
+      <a href="https://geeksforgeeks.org/" target="_blank" class="btn-coach"
+        style="background: rgba(86, 84, 73, 0.35); border-color: var(--border-olive);">
+        <i class="fa-solid fa-book-bookmark"></i> Study Guide & Tutorial &rarr;
+      </a>
+      {% endif %}
+
+      <button class="btn-coach" onclick="openCoachModal({{ q.id }})"
+        style="background: var(--bone); color: var(--smoky-black); font-weight: 700;">
+        <i class="fa-solid fa-robot"></i> Practice Answer with AI Coach
+      </button>
+    </div>
+  </div>
+  {% endfor %}
+  {% else %}
+  <div class="glass-panel" style="text-align: center; padding: 60px;">
+    <i class="fa-solid fa-comments" style="font-size: 44px; color: var(--bone); margin-bottom: 16px;"></i>
+    <h3 style="font-family: var(--font-serif); font-size: 24px; color: var(--floral-white); margin-bottom: 8px;">No
+      Interview Questions Loaded Yet</h3>
+    <p style="font-size: 14px; color: var(--bone); opacity: 0.8; margin-bottom: 24px;">Configure your target company and
+      role above, then click <strong>"Fetch 10 AI Questions & Resources"</strong>!</p>
+  </div>
   {% endif %}
 </div>
 
 <!-- Modal AI Mock Coach Chatbot -->
 <div class="modal-overlay" id="coachModal">
   <div class="modal-glass">
-    <button onclick="closeCoachModal()" style="position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: var(--bone); font-size: 20px; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+    <button onclick="closeCoachModal()"
+      style="position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: var(--bone); font-size: 20px; cursor: pointer;"><i
+        class="fa-solid fa-xmark"></i></button>
 
     <div style="margin-bottom: 20px;">
-      <span style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--bone); opacity: 0.7;">AI Mock Interview Coach</span>
-      <h3 style="font-family: var(--font-serif); font-size: 19px; color: var(--floral-white); margin-top: 4px;" id="modalQText">Question Text</h3>
+      <span style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--bone); opacity: 0.7;">AI
+        Mock Interview Coach</span>
+      <h3 style="font-family: var(--font-serif); font-size: 19px; color: var(--floral-white); margin-top: 4px;"
+        id="modalQText">Question Text</h3>
     </div>
 
     <div id="coachFormArea">
-      <label style="display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--bone); margin-bottom: 8px;">Type your response / answer:</label>
-      <textarea id="userAnswerText" rows="5" placeholder="Explain your technical response or approach to this question..." style="width: 100%; padding: 14px; background: rgba(17, 18, 13, 0.9); border: 1px solid var(--border-olive); border-radius: 12px; color: var(--floral-white); font-family: inherit; font-size: 14px; outline: none; margin-bottom: 20px;"></textarea>
+      <label
+        style="display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--bone); margin-bottom: 8px;">Type
+        your response / answer:</label>
+      <textarea id="userAnswerText" rows="5"
+        placeholder="Explain your technical response or approach to this question..."
+        style="width: 100%; padding: 14px; background: rgba(17, 18, 13, 0.9); border: 1px solid var(--border-olive); border-radius: 12px; color: var(--floral-white); font-family: inherit; font-size: 14px; outline: none; margin-bottom: 20px;"></textarea>
 
-      <button onclick="submitAnswerToCoach()" id="btnSubmitCoach" class="btn-nav-primary" style="width: 100%; padding: 14px; border: none; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+      <button onclick="submitAnswerToCoach()" id="btnSubmitCoach" class="btn-nav-primary"
+        style="width: 100%; padding: 14px; border: none; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;">
         <span>Evaluate Answer with AI Coach</span>
         <i class="fa-solid fa-paper-plane"></i>
       </button>
@@ -257,7 +406,9 @@
     <!-- AI Evaluation Feedback Output Area -->
     <div id="coachFeedbackArea" style="display: none; margin-top: 10px;">
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-        <span class="eval-badge" style="background: rgba(16, 185, 129, 0.2); color: #a7f3d0; border: 1px solid rgba(16, 185, 129, 0.4);" id="evalScore">Score: 8/10</span>
+        <span class="eval-badge"
+          style="background: rgba(16, 185, 129, 0.2); color: #a7f3d0; border: 1px solid rgba(16, 185, 129, 0.4);"
+          id="evalScore">Score: 8/10</span>
         <span style="font-weight: 600; color: var(--floral-white);" id="evalVerdict">Strong Answer</span>
       </div>
 
@@ -267,16 +418,21 @@
       </div>
 
       <div style="margin-bottom: 14px;">
-        <strong style="color: #fde68a; font-size: 13.5px;"><i class="fa-solid fa-triangle-exclamation"></i> Missing Concepts:</strong>
+        <strong style="color: #fde68a; font-size: 13.5px;"><i class="fa-solid fa-triangle-exclamation"></i> Missing
+          Concepts:</strong>
         <p style="font-size: 14px; color: var(--bone); opacity: 0.9; margin-top: 4px;" id="evalMissing"></p>
       </div>
 
-      <div style="margin-bottom: 20px; padding: 16px; background: rgba(86, 84, 73, 0.2); border-radius: 12px; border: 1px solid var(--border-olive);">
-        <strong style="color: var(--floral-white); font-size: 13.5px;"><i class="fa-solid fa-star"></i> Ideal Model Answer:</strong>
-        <p style="font-size: 13.5px; color: var(--bone); opacity: 0.95; margin-top: 6px; line-height: 1.6;" id="evalModelAnswer"></p>
+      <div
+        style="margin-bottom: 20px; padding: 16px; background: rgba(86, 84, 73, 0.2); border-radius: 12px; border: 1px solid var(--border-olive);">
+        <strong style="color: var(--floral-white); font-size: 13.5px;"><i class="fa-solid fa-star"></i> Ideal Model
+          Answer:</strong>
+        <p style="font-size: 13.5px; color: var(--bone); opacity: 0.95; margin-top: 6px; line-height: 1.6;"
+          id="evalModelAnswer"></p>
       </div>
 
-      <button onclick="resetCoachForm()" class="btn-nav-primary" style="width: 100%; padding: 12px; font-size: 14px;">Try Another Answer</button>
+      <button onclick="resetCoachForm()" class="btn-nav-primary"
+        style="width: 100%; padding: 12px; font-size: 14px;">Try Another Answer</button>
     </div>
   </div>
 </div>
@@ -325,25 +481,25 @@
         'round_category': roundCategory
       })
     })
-    .then(res => res.json())
-    .then(data => {
-      if (data.status === 'success') {
-        if (data.summary) {
-          document.getElementById('companySummaryCard').style.display = 'block';
-          document.getElementById('companyTitleText').textContent = data.company + ' — ' + data.target_role + ' Overview';
-          document.getElementById('companySummaryText').textContent = data.summary;
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success') {
+          if (data.summary) {
+            document.getElementById('companySummaryCard').style.display = 'block';
+            document.getElementById('companyTitleText').textContent = data.company + ' — ' + data.target_role + ' Overview';
+            document.getElementById('companySummaryText').textContent = data.summary;
 
-          if (data.key_focus_areas && data.key_focus_areas.length > 0) {
-            let chipsHtml = '';
-            data.key_focus_areas.forEach(area => {
-              chipsHtml += `<span class="focus-chip"><i class="fa-solid fa-bullseye"></i> ${area}</span>`;
-            });
-            document.getElementById('companyFocusChips').innerHTML = chipsHtml;
+            if (data.key_focus_areas && data.key_focus_areas.length > 0) {
+              let chipsHtml = '';
+              data.key_focus_areas.forEach(area => {
+                chipsHtml += `<span class="focus-chip"><i class="fa-solid fa-bullseye"></i> ${area}</span>`;
+              });
+              document.getElementById('companyFocusChips').innerHTML = chipsHtml;
+            }
           }
+          window.location.reload();
         }
-        window.location.reload();
-      }
-    });
+      });
   }
 
   function filterCat(cat, btnEl) {
@@ -399,20 +555,20 @@
         'target_role': '{{ analysis.job_description.title|default:profile.target_role }}'
       })
     })
-    .then(res => res.json())
-    .then(data => {
-      btn.disabled = false;
-      btn.innerHTML = '<span>Evaluate Answer with AI Coach</span><i class="fa-solid fa-paper-plane"></i>';
+      .then(res => res.json())
+      .then(data => {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Evaluate Answer with AI Coach</span><i class="fa-solid fa-paper-plane"></i>';
 
-      document.getElementById('coachFormArea').style.display = 'none';
-      document.getElementById('coachFeedbackArea').style.display = 'block';
+        document.getElementById('coachFormArea').style.display = 'none';
+        document.getElementById('coachFeedbackArea').style.display = 'block';
 
-      document.getElementById('evalScore').textContent = 'Score: ' + data.score + '/10';
-      document.getElementById('evalVerdict').textContent = data.verdict || 'Evaluation Complete';
-      document.getElementById('evalStrengths').textContent = data.strengths || 'Good technical explanation.';
-      document.getElementById('evalMissing').textContent = data.missing_concepts || 'None identified.';
-      document.getElementById('evalModelAnswer').textContent = data.model_answer || '';
-    });
+        document.getElementById('evalScore').textContent = 'Score: ' + data.score + '/10';
+        document.getElementById('evalVerdict').textContent = data.verdict || 'Evaluation Complete';
+        document.getElementById('evalStrengths').textContent = data.strengths || 'Good technical explanation.';
+        document.getElementById('evalMissing').textContent = data.missing_concepts || 'None identified.';
+        document.getElementById('evalModelAnswer').textContent = data.model_answer || '';
+      });
   }
 
   function resetCoachForm() {
