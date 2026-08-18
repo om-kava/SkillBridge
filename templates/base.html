@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}Aesthetic AI Assistant{% endblock %} | Django Chatbot</title>
+    
+    <!-- Google Fonts: Playfair Display (Serif), Plus Jakarta Sans (Sans), Fira Code (Code) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Marked.js for Structured Markdown Parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- Highlight.js for Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+
+    <!-- Luxury Color System & Styling Tokens -->
+    <style>
+      :root {
+        /* User exact color palette */
+        --smoky-black: #11120D;
+        --olive-drab: #565449;
+        --bone: #D8CFBC;
+        --floral-white: #FFFBF4;
+        
+        /* Derived luxury shades */
+        --smoky-card: #181913;
+        --smoky-glass: rgba(17, 18, 13, 0.85);
+        --olive-light: #6E6B5E;
+        --olive-glass: rgba(86, 84, 73, 0.25);
+        --bone-glow: rgba(216, 207, 188, 0.25);
+        --border-olive: rgba(86, 84, 73, 0.4);
+        --border-bone: rgba(216, 207, 188, 0.3);
+        
+        /* Typography */
+        --font-serif: 'Playfair Display', Georgia, serif;
+        --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        --font-code: 'Fira Code', monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body, html {
+        height: 100%;
+        font-family: var(--font-sans);
+        background-color: var(--smoky-black);
+        color: var(--bone);
+        overflow-x: hidden;
+      }
+
+      /* Ambient Background Orbs */
+      .ambient-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      .glow-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(140px);
+        opacity: 0.25;
+        animation: floatGlow 14s ease-in-out infinite alternate;
+      }
+
+      .glow-orb-1 {
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, var(--olive-drab) 0%, transparent 70%);
+        top: -120px;
+        left: -100px;
+      }
+
+      .glow-orb-2 {
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, var(--bone) 0%, transparent 70%);
+        bottom: -200px;
+        right: -100px;
+        animation-delay: -7s;
+        opacity: 0.15;
+      }
+
+      @keyframes floatGlow {
+        0% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(40px, 30px) scale(1.1); }
+        100% { transform: translate(-30px, 50px) scale(0.95); }
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(86, 84, 73, 0.4);
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--bone);
+      }
+
+      /* Glass Panels */
+      .glass-card {
+        background: var(--smoky-glass);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid var(--border-olive);
+        border-radius: 20px;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+      }
+
+      /* Typography Serif Classes */
+      .font-serif {
+        font-family: var(--font-serif);
+      }
+    </style>
+    {% block styles %}{% endblock %}
+  </head>
+  <body>
+    <!-- Background Ambient Orbs -->
+    <div class="ambient-bg">
+      <div class="glow-orb glow-orb-1"></div>
+      <div class="glow-orb glow-orb-2"></div>
+    </div>
+
+    {% block content %}{% endblock %}
+
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

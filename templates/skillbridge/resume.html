@@ -1,0 +1,292 @@
+{% extends 'skillbridge/base.html' %}
+
+{% block title %}ATS Resume Doctor & Resume Manager{% endblock %}
+
+{% block styles %}
+<style>
+  .btn-doctor {
+    padding: 12px 24px; background: rgba(216, 207, 188, 0.2); border: 1px solid var(--bone);
+    border-radius: 25px; color: var(--floral-white); font-weight: 700; font-size: 14px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s ease;
+    box-shadow: 0 4px 15px rgba(216, 207, 188, 0.2);
+  }
+  .btn-doctor:hover { background: var(--bone); color: var(--smoky-black); transform: translateY(-1px); }
+
+  .btn-doctor-small {
+    padding: 6px 14px; background: rgba(216, 207, 188, 0.15); border: 1px solid var(--border-olive);
+    border-radius: 12px; color: var(--floral-white); font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px; margin-top: 8px;
+  }
+  .btn-doctor-small:hover { background: var(--bone); color: var(--smoky-black); }
+
+  /* Doctor Modal */
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.82); backdrop-filter: blur(12px);
+    display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px;
+  }
+  .modal-overlay.active { display: flex; }
+
+  .modal-glass {
+    background: var(--smoky-card); border: 1px solid var(--border-bone);
+    border-radius: 24px; width: 100%; max-width: 780px; padding: 36px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.85); position: relative; max-height: 90vh; overflow-y: auto;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .keyword-chip {
+    padding: 4px 12px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: 12px; font-size: 12px; color: #fca5a5; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; margin: 3px;
+  }
+
+  .bullet-card {
+    padding: 14px 18px; background: rgba(16, 185, 129, 0.08); border-left: 4px solid #10b981;
+    border-radius: 12px; margin-bottom: 12px; font-size: 13.5px; color: var(--floral-white);
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+
+  .btn-copy {
+    padding: 6px 14px; background: rgba(216, 207, 188, 0.2); border: 1px solid var(--bone);
+    border-radius: 12px; color: var(--floral-white); font-size: 11.5px; font-weight: 700; cursor: pointer;
+    flex-shrink: 0; transition: all 0.2s ease;
+  }
+  .btn-copy:hover { background: var(--bone); color: var(--smoky-black); }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 1040px; margin: 0 auto;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 16px;">
+    <div>
+      <h1 style="font-family: var(--font-serif); font-size: 32px; color: var(--floral-white); margin-bottom: 6px;">
+        ATS Resume Doctor & File Manager
+      </h1>
+      <p style="font-size: 14.5px; color: var(--bone); opacity: 0.85;">
+        Select an uploaded resume, choose a target job role, and perform an instant AI ATS audit
+      </p>
+    </div>
+
+    {% if resumes %}
+      <button class="btn-doctor" onclick="openDoctorModal()">
+        <i class="fa-solid fa-user-doctor"></i> Run AI ATS Resume Audit
+      </button>
+    {% endif %}
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <!-- Upload Resume Card -->
+    <div class="glass-panel">
+      <h3 style="font-family: var(--font-serif); font-size: 22px; color: var(--floral-white); margin-bottom: 8px;">Upload New Resume</h3>
+      <p style="font-size: 13.5px; color: var(--bone); opacity: 0.8; margin-bottom: 24px;">Upload PDF or DOCX file to extract technical text for AI career evaluations.</p>
+
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div style="border: 2px dashed var(--border-olive); border-radius: 16px; padding: 36px 20px; text-align: center; background: rgba(86, 84, 73, 0.1); margin-bottom: 24px;">
+          <i class="fa-solid fa-cloud-arrow-up" style="font-size: 38px; color: var(--bone); margin-bottom: 12px;"></i>
+          <p style="font-size: 14px; color: var(--floral-white); font-weight: 600; margin-bottom: 6px;">Select Resume File</p>
+          <p style="font-size: 12px; color: var(--bone); opacity: 0.6; margin-bottom: 16px;">Supported: .pdf, .docx, .txt (Max size: 5MB)</p>
+          <input type="file" name="resume_file" accept=".pdf,.docx,.doc,.txt" required style="display: block; margin: 0 auto; color: var(--bone); font-size: 13px;">
+        </div>
+
+        <button type="submit" class="btn-nav-primary" style="width: 100%; padding: 14px; border: none; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <span>Upload & Extract Resume Text</span>
+          <i class="fa-solid fa-file-export"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- Uploaded Resumes List -->
+    <div class="glass-panel">
+      <h3 style="font-family: var(--font-serif); font-size: 22px; color: var(--floral-white); margin-bottom: 16px;">Your Uploaded Resumes</h3>
+
+      {% if resumes %}
+        {% for item in resumes %}
+          <div style="padding: 18px; background: rgba(86, 84, 73, 0.2); border: 1px solid var(--border-olive); border-radius: 16px; margin-bottom: 14px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+              <span style="font-weight: 700; color: var(--floral-white); font-size: 15px;"><i class="fa-solid fa-file-pdf" style="color: var(--bone); margin-right: 6px;"></i> Resume #{{ item.id }}</span>
+              <span style="font-size: 12px; color: var(--bone); opacity: 0.75;">Uploaded {{ item.uploaded_at|date:"M d, Y H:i" }}</span>
+            </div>
+
+            <div style="font-size: 12.5px; color: var(--bone); opacity: 0.85; line-height: 1.5; height: 52px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 10px;">
+              {{ item.extracted_text|default:"[Text extracted successfully]" }}
+            </div>
+
+            <div style="display: flex; justify-content: flex-end;">
+              <button onclick="openDoctorModalForResume({{ item.id }})" class="btn-doctor-small">
+                <i class="fa-solid fa-user-doctor"></i> Audit This Specific Resume &rarr;
+              </button>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div style="text-align: center; padding: 48px; color: var(--bone); opacity: 0.75;">
+          <i class="fa-solid fa-file-arrow-up" style="font-size: 36px; margin-bottom: 12px;"></i>
+          <p>No resumes uploaded yet. Upload your resume on the left to start ATS Doctor analysis.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Modal AI ATS Resume Doctor -->
+<div class="modal-overlay" id="doctorModal">
+  <div class="modal-glass">
+    <button onclick="closeDoctorModal()" style="position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: var(--bone); font-size: 20px; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+
+    <div style="margin-bottom: 20px;">
+      <span style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--bone); opacity: 0.75;">AI ATS Resume Doctor</span>
+      <h3 style="font-family: var(--font-serif); font-size: 24px; color: var(--floral-white); margin-top: 4px;">ATS Match Audit & Bullet Point Enhancer</h3>
+    </div>
+
+    <!-- Configure Resume File & Target Role for Audit -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; padding: 18px; background: rgba(86, 84, 73, 0.2); border-radius: 16px; border: 1px solid var(--border-olive);">
+      <div>
+        <label style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--bone); margin-bottom: 6px;">Select Resume to Audit</label>
+        <select id="docResumeSelect" style="width: 100%; padding: 11px 14px;">
+          {% for item in resumes %}
+            <option value="{{ item.id }}">Resume #{{ item.id }} (Uploaded {{ item.uploaded_at|date:"M d, Y" }})</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--bone); margin-bottom: 6px;">Target Audit Role</label>
+        <input type="text" id="docRoleInput" value="{{ profile.target_role }}" placeholder="e.g. Python Backend Developer" style="width: 100%; padding: 11px 14px; background: rgba(17, 18, 13, 0.9); border: 1px solid var(--border-olive); border-radius: 12px; color: var(--floral-white); outline: none; font-size: 13.5px;">
+      </div>
+
+      <div style="grid-column: span 2; display: flex; justify-content: flex-end;">
+        <button onclick="runDoctorAudit()" class="btn-nav-primary" style="padding: 10px 24px; font-size: 13.5px;">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Run AI ATS Audit
+        </button>
+      </div>
+    </div>
+
+    <div id="doctorLoading" style="text-align: center; padding: 40px;">
+      <i class="fa-solid fa-spinner fa-spin" style="font-size: 36px; color: var(--bone); margin-bottom: 14px;"></i>
+      <p style="font-size: 14.5px; color: var(--floral-white);">Analyzing selected resume ATS keyword compatibility & generating bullet points...</p>
+    </div>
+
+    <div id="doctorContent" style="display: none;">
+      <!-- Score & Verdict Banner -->
+      <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 24px; padding: 20px; background: rgba(86, 84, 73, 0.25); border: 1px solid var(--border-olive); border-radius: 16px;">
+        <div style="font-family: var(--font-serif); font-size: 40px; font-weight: 700; color: var(--floral-white);" id="docAtsScore">82/100</div>
+        <div>
+          <div style="font-size: 16px; font-weight: 700; color: var(--floral-white);" id="docVerdict">Strong Technical Foundation</div>
+          <div style="font-size: 12.5px; color: var(--bone); opacity: 0.8; margin-top: 2px;">ATS Parser Rating & Compatibility Audit</div>
+        </div>
+      </div>
+
+      <!-- Missing Keywords Badges -->
+      <div style="margin-bottom: 20px;" id="docKeywordsSection">
+        <h4 style="font-size: 14px; color: #fca5a5; margin-bottom: 8px;"><i class="fa-solid fa-tags"></i> Missing Core ATS Keywords:</h4>
+        <div id="docKeywordsList"></div>
+      </div>
+
+      <!-- Critical Structural Fixes -->
+      <div style="margin-bottom: 24px;">
+        <h4 style="font-size: 14px; color: #fde68a; margin-bottom: 8px;"><i class="fa-solid fa-triangle-exclamation"></i> Critical Structural Fixes:</h4>
+        <ul style="padding-left: 20px; line-height: 1.7; color: var(--bone); font-size: 13.5px;" id="docFixes"></ul>
+      </div>
+
+      <!-- Quantified STAR Bullet Points -->
+      <div>
+        <h4 style="font-size: 14px; color: #a7f3d0; margin-bottom: 12px;"><i class="fa-solid fa-wand-magic-sparkles"></i> Quantified High-Impact Resume Bullet Points:</h4>
+        <div id="docBullets"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function openDoctorModal() {
+    document.getElementById('doctorModal').classList.add('active');
+    runDoctorAudit();
+  }
+
+  function openDoctorModalForResume(resumeId) {
+    document.getElementById('docResumeSelect').value = resumeId;
+    openDoctorModal();
+  }
+
+  function runDoctorAudit() {
+    document.getElementById('doctorLoading').style.display = 'block';
+    document.getElementById('doctorContent').style.display = 'none';
+
+    const resumeId = document.getElementById('docResumeSelect').value;
+    const role = document.getElementById('docRoleInput').value.trim() || '{{ profile.target_role }}';
+
+    fetch('{% url "sb_ajax_resume_doctor" %}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: new URLSearchParams({
+        'resume_id': resumeId,
+        'target_role': role
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('docAtsScore').innerText = (data.ats_score || 82) + '/100';
+      document.getElementById('docVerdict').innerText = data.verdict || 'Good Technical Base';
+
+      // Keywords Badges
+      const kwList = document.getElementById('docKeywordsList');
+      kwList.innerHTML = '';
+      (data.missing_keywords || []).forEach(kw => {
+        const span = document.createElement('span');
+        span.className = 'keyword-chip';
+        span.innerHTML = `<i class="fa-solid fa-xmark"></i> ${kw}`;
+        kwList.appendChild(span);
+      });
+
+      // Fixes List
+      const fixesList = document.getElementById('docFixes');
+      fixesList.innerHTML = '';
+      (data.critical_fixes || []).forEach(f => {
+        const li = document.createElement('li');
+        li.innerText = f;
+        fixesList.appendChild(li);
+      });
+
+      // Bullet Cards
+      const bulletsDiv = document.getElementById('docBullets');
+      bulletsDiv.innerHTML = '';
+      (data.enhanced_bullet_points || []).forEach((b, idx) => {
+        const card = document.createElement('div');
+        card.className = 'bullet-card';
+        card.innerHTML = `
+          <span>• ${b}</span>
+          <button class="btn-copy" onclick="copyText('${b.replace(/'/g, "\\'")}', this)">
+            <i class="fa-regular fa-copy"></i> Copy
+          </button>
+        `;
+        bulletsDiv.appendChild(card);
+      });
+
+      document.getElementById('doctorLoading').style.display = 'none';
+      document.getElementById('doctorContent').style.display = 'block';
+    });
+  }
+
+  function closeDoctorModal() {
+    document.getElementById('doctorModal').classList.remove('active');
+  }
+
+  function copyText(text, btn) {
+    navigator.clipboard.writeText(text);
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+    setTimeout(() => {
+      btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+    }, 2000);
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,194 @@
+{% extends 'skillbridge/base.html' %}
+
+{% block title %}Executive Career Profile & Skill Settings{% endblock %}
+
+{% block styles %}
+<style>
+  .profile-header-card {
+    background: var(--smoky-glass); border: 1px solid var(--border-bone); border-radius: 24px; padding: 32px;
+    margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+  }
+  
+  .avatar-ring {
+    width: 76px; height: 76px; background: rgba(86, 84, 73, 0.35); border: 2px solid var(--bone);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 32px; color: var(--floral-white); box-shadow: 0 0 24px rgba(216, 207, 188, 0.25); flex-shrink: 0;
+  }
+
+  .stat-badge {
+    padding: 12px 20px; background: rgba(86, 84, 73, 0.2); border: 1px solid var(--border-olive);
+    border-radius: 16px; text-align: center;
+  }
+
+  .skill-chip {
+    padding: 6px 14px; background: rgba(86, 84, 73, 0.3); border: 1px solid var(--border-olive);
+    border-radius: 16px; color: var(--floral-white); font-size: 12.5px; font-weight: 600; cursor: pointer;
+    transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px; margin: 4px;
+  }
+  .skill-chip:hover {
+    background: var(--bone); color: var(--smoky-black); transform: translateY(-1px);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 860px; margin: 0 auto;">
+  <!-- Profile Header Card -->
+  <div class="profile-header-card">
+    <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+      <div class="avatar-ring">
+        <i class="fa-solid fa-user-graduate"></i>
+      </div>
+      <div>
+        <h1 style="font-family: var(--font-serif); font-size: 28px; color: var(--floral-white); margin-bottom: 4px;">
+          {{ profile.full_name|default:user.username }}
+        </h1>
+        <p style="font-size: 14px; color: var(--bone); opacity: 0.85;">
+          Target Role: <strong>{{ profile.target_role }}</strong> | {{ profile.education|default:"MCA / B.Tech" }}
+        </p>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div class="stat-badge">
+        <span style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--bone); opacity: 0.75;">Readiness Score</span>
+        <strong style="font-family: var(--font-serif); font-size: 22px; color: var(--floral-white);">{{ readiness_score }}/100</strong>
+      </div>
+      <div class="stat-badge">
+        <span style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--bone); opacity: 0.75;">Evaluations</span>
+        <strong style="font-family: var(--font-serif); font-size: 22px; color: var(--floral-white);">{{ total_analyses }} Saved</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Settings Form -->
+  <div class="glass-panel" style="padding: 36px;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border-olive);">
+      <i class="fa-solid fa-sliders" style="font-size: 20px; color: var(--bone);"></i>
+      <h3 style="font-family: var(--font-serif); font-size: 22px; color: var(--floral-white);">Career Profile Configuration</h3>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+        <div>
+          <label style="display: block; font-size: 11.5px; font-weight: 700; text-transform: uppercase; color: var(--bone); margin-bottom: 8px;">Full Name</label>
+          <input type="text" name="full_name" value="{{ profile.full_name }}" placeholder="e.g. Rahul Sharma" style="width: 100%; padding: 13px 16px; background: rgba(17, 18, 13, 0.9); border: 1px solid var(--border-olive); border-radius: 12px; color: var(--floral-white); outline: none; font-size: 14px;">
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 11.5px; font-weight: 700; text-transform: uppercase; color: var(--bone); margin-bottom: 8px;">Education / Degree</label>
+          <input type="text" name="education" value="{{ profile.education }}" placeholder="e.g. MCA - GLS University" style="width: 100%; padding: 13px 16px; background: rgba(17, 18, 13, 0.9); border: 1px solid var(--border-olive); border-radius: 12px; color: var(--floral-white); outline: none; font-size: 14px;">
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+        <div>
+          <label style="display: block; font-size: 11.5px; font-weight: 700; text-transform: uppercase; color: var(--bone); margin-bottom: 8px;">Target Job Role (Type Any Custom Role)</label>
+          <input type="text" name="target_role" id="targetRoleSelect" value="{{ profile.target_role }}" placeholder="e.g. Python Backend Developer, Data Analyst, Cloud SDE..." required style="width: 100%; padding: 13px 16px; background: rgba(17, 18, 13, 0.9); border: 1px solid var(--border-olive); border-radius: 12px; color: var(--floral-white); outline: none; font-size: 14px;">
+          
+          <div style="margin-top: 6px; display: flex; gap: 4px; flex-wrap: wrap;">
+            <span style="font-size: 11px; color: var(--bone); opacity: 0.7; align-self: center;">Quick Fill:</span>
+            <button type="button" onclick="setRole('Python Backend Developer')" style="padding: 2px 8px; background: rgba(86, 84, 73, 0.25); border: 1px solid var(--border-olive); border-radius: 10px; color: var(--bone); font-size: 11px; cursor: pointer;">Python Backend</button>
+            <button type="button" onclick="setRole('Full Stack Web Developer')" style="padding: 2px 8px; background: rgba(86, 84, 73, 0.25); border: 1px solid var(--border-olive); border-radius: 10px; color: var(--bone); font-size: 11px; cursor: pointer;">Full Stack</button>
+            <button type="button" onclick="setRole('Data Analyst / AI Engineer')" style="padding: 2px 8px; background: rgba(86, 84, 73, 0.25); border: 1px solid var(--border-olive); border-radius: 10px; color: var(--bone); font-size: 11px; cursor: pointer;">Data / AI</button>
+            <button type="button" onclick="setRole('Software Engineer (Campus Drive)')" style="padding: 2px 8px; background: rgba(86, 84, 73, 0.25); border: 1px solid var(--border-olive); border-radius: 10px; color: var(--bone); font-size: 11px; cursor: pointer;">Campus Placement</button>
+          </div>
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 11.5px; font-weight: 700; text-transform: uppercase; color: var(--bone); margin-bottom: 8px;">Experience Level</label>
+          <select name="experience_level" style="width: 100%; padding: 13px 16px;">
+            <option value="Fresher" {% if profile.experience_level == 'Fresher' %}selected{% endif %}>Fresher (0 Years)</option>
+            <option value="Student" {% if profile.experience_level == 'Student' %}selected{% endif %}>Student / Final Year MCA</option>
+            <option value="Early-Career" {% if profile.experience_level == 'Early-Career' %}selected{% endif %}>Early Career (1-2 Years)</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; font-size: 11.5px; font-weight: 700; text-transform: uppercase; color: var(--bone); margin-bottom: 8px;">Weekly Learning Time (Hours)</label>
+        <input type="number" name="weekly_learning_hours" id="weeklyHoursInput" value="{{ profile.weekly_learning_hours }}" min="1" max="60" style="width: 100%; padding: 13px 16px; background: rgba(17, 18, 13, 0.9); border: 1px solid var(--border-olive); border-radius: 12px; color: var(--floral-white); outline: none; font-size: 14px;">
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+          <label style="font-size: 11.5px; font-weight: 700; text-transform: uppercase; color: var(--bone);">Current Technical Skills</label>
+          <button type="button" onclick="recommendSkills()" id="btnRecSkills" style="background: rgba(216, 207, 188, 0.2); border: 1px solid var(--bone); border-radius: 16px; color: var(--floral-white); font-size: 12px; font-weight: 600; padding: 6px 14px; cursor: pointer; transition: all 0.2s ease;">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> AI Recommend Core Skills
+          </button>
+        </div>
+
+        <input type="text" name="current_skills" id="currentSkillsInput" value="{{ profile.current_skills }}" placeholder="e.g. Python, Django, HTML, CSS, SQL, Git" style="width: 100%; padding: 13px 16px; background: rgba(17, 18, 13, 0.9); border: 1px solid var(--border-olive); border-radius: 12px; color: var(--floral-white); outline: none; font-size: 14px; margin-bottom: 10px;">
+        
+        <div id="skillsChipsContainer" style="display: none; padding: 12px; background: rgba(86, 84, 73, 0.15); border: 1px solid var(--border-olive); border-radius: 12px; margin-top: 8px;">
+          <span style="font-size: 11.5px; color: var(--bone); opacity: 0.8; display: block; margin-bottom: 6px;">Recommended Skills (Click to append):</span>
+          <div id="chipsList"></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 28px;">
+        <label style="display: block; font-size: 11.5px; font-weight: 700; text-transform: uppercase; color: var(--bone); margin-bottom: 8px;">Career Goal & Placement Objectives</label>
+        <textarea name="career_goal" rows="3" placeholder="Describe your placement goals and target companies..." style="width: 100%; padding: 14px 16px; background: rgba(17, 18, 13, 0.9); border: 1px solid var(--border-olive); border-radius: 14px; color: var(--floral-white); outline: none; font-family: inherit; font-size: 14px; line-height: 1.6;">{{ profile.career_goal }}</textarea>
+      </div>
+
+      <button type="submit" class="btn-nav-primary" style="padding: 15px; width: 100%; border: none; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <span>Save Career Profile Settings</span>
+        <i class="fa-solid fa-floppy-disk"></i>
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function recommendSkills() {
+    const role = document.getElementById('targetRoleSelect').value;
+    const btn = document.getElementById('btnRecSkills');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Recommending...';
+
+    fetch('{% url "sb_ajax_profile_recommend_skills" %}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: new URLSearchParams({ 'target_role': role })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.recommended_skills && data.recommended_skills.length > 0) {
+        document.getElementById('skillsChipsContainer').style.display = 'block';
+        let html = '';
+        data.recommended_skills.forEach(skill => {
+          html += `<span class="skill-chip" onclick="addSkillChip('${skill}')"><i class="fa-solid fa-plus"></i> ${skill}</span>`;
+        });
+        document.getElementById('chipsList').innerHTML = html;
+        document.getElementById('currentSkillsInput').value = data.skills_string;
+      }
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> AI Recommend Core Skills';
+    });
+  }
+
+  function setRole(role) {
+    document.getElementById('targetRoleSelect').value = role;
+  }
+
+  function addSkillChip(skill) {
+    const input = document.getElementById('currentSkillsInput');
+    let current = input.value.trim();
+    if (current && !current.includes(skill)) {
+      input.value = current + ', ' + skill;
+    } else if (!current) {
+      input.value = skill;
+    }
+  }
+</script>
+{% endblock %}

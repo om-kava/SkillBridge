@@ -1,0 +1,166 @@
+{% extends 'skillbridge/base.html' %}
+
+{% block title %}SkillBridge — Career Placement & Skill-Gap Intelligence Platform{% endblock %}
+
+{% block styles %}
+<style>
+  .hero-container {
+    text-align: center; padding: 70px 20px 50px 20px; max-width: 960px; margin: 0 auto; position: relative;
+  }
+
+  .pulse-badge {
+    display: inline-flex; align-items: center; gap: 10px; padding: 8px 22px; background: rgba(86, 84, 73, 0.35);
+    border: 1px solid var(--bone); border-radius: 30px; font-size: 13px; color: var(--floral-white);
+    margin-bottom: 28px; box-shadow: 0 0 25px rgba(216, 207, 188, 0.2); animation: fadeInUp 0.5s ease;
+  }
+  .pulse-dot {
+    width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 10px #10b981; animation: pulseGlow 1.8s infinite;
+  }
+
+  .hero-title {
+    font-family: var(--font-serif); font-size: 56px; font-weight: 700; line-height: 1.12; color: var(--floral-white);
+    letter-spacing: -1px; margin-bottom: 22px; animation: fadeInUp 0.6s ease;
+  }
+
+  .hero-subtitle {
+    font-size: 19px; color: var(--bone); opacity: 0.9; line-height: 1.65; margin-bottom: 42px;
+    max-width: 820px; margin-left: auto; margin-right: auto; animation: fadeInUp 0.7s ease;
+  }
+
+  .hero-ctas {
+    display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 60px;
+    animation: fadeInUp 0.8s ease;
+  }
+
+  .btn-hero-primary {
+    padding: 16px 38px; background: var(--bone); color: var(--smoky-black); border-radius: 35px;
+    font-size: 16.5px; font-weight: 700; text-decoration: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 12px 35px rgba(216, 207, 188, 0.3); display: inline-flex; align-items: center; gap: 12px;
+  }
+  .btn-hero-primary:hover {
+    background: var(--floral-white); transform: translateY(-3px); box-shadow: 0 16px 45px rgba(255, 251, 244, 0.45);
+  }
+
+  .btn-hero-secondary {
+    padding: 16px 34px; background: rgba(86, 84, 73, 0.25); border: 1px solid var(--border-olive);
+    color: var(--floral-white); border-radius: 35px; font-size: 16.5px; font-weight: 600; text-decoration: none;
+    transition: all 0.25s ease; display: inline-flex; align-items: center; gap: 10px;
+  }
+  .btn-hero-secondary:hover {
+    background: rgba(86, 84, 73, 0.5); border-color: var(--bone); transform: translateY(-2px);
+  }
+
+  /* Stats Counter Banner */
+  .stats-banner {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 28px;
+    background: var(--smoky-glass); border: 1px solid var(--border-bone); border-radius: 24px;
+    margin-bottom: 60px; box-shadow: 0 20px 45px rgba(0,0,0,0.4);
+  }
+  .stat-item { text-align: center; }
+  .stat-num { font-family: var(--font-serif); font-size: 36px; font-weight: 700; color: var(--floral-white); line-height: 1; }
+  .stat-label { font-size: 12.5px; color: var(--bone); opacity: 0.8; margin-top: 6px; font-weight: 600; text-transform: uppercase; }
+
+  /* Feature Grid */
+  .features-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 60px;
+  }
+  .feature-card {
+    background: var(--smoky-glass); border: 1px solid var(--border-olive); border-radius: 22px; padding: 32px 28px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; overflow: hidden;
+  }
+  .feature-card:hover {
+    border-color: var(--bone); transform: translateY(-4px); box-shadow: 0 20px 45px rgba(0,0,0,0.6);
+  }
+  .feature-icon {
+    width: 52px; height: 52px; background: rgba(86, 84, 73, 0.35); border: 1px solid var(--bone);
+    border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--floral-white); margin-bottom: 20px;
+  }
+
+  @keyframes pulseGlow { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-container">
+  <div class="pulse-badge">
+    <span class="pulse-dot"></span>
+    <span>AI Career Placement & Skill-Gap Intelligence Engine</span>
+  </div>
+
+  <h1 class="hero-title">
+    Bridge the gap between your resume and campus placement success.
+  </h1>
+  
+  <p class="hero-subtitle">
+    SkillBridge evaluates your candidate resume against target Job Descriptions, computes a transparent 0-100 Readiness Score, builds personalized multi-week learning roadmaps, and generates 10 company-specific interview questions.
+  </p>
+
+  <div class="hero-ctas">
+    <a href="{% if user.is_authenticated %}{% url 'sb_analyze' %}{% else %}{% url 'sb_register' %}{% endif %}" class="btn-hero-primary">
+      <span>Analyze Career Readiness</span>
+      <i class="fa-solid fa-arrow-right"></i>
+    </a>
+    <a href="{% url 'sb_about' %}" class="btn-hero-secondary">
+      <i class="fa-solid fa-circle-info"></i>
+      <span>Explore Platform Architecture</span>
+    </a>
+  </div>
+</div>
+
+<!-- Stats Counter Banner -->
+<div class="stats-banner">
+  <div class="stat-item">
+    <div class="stat-num">100%</div>
+    <div class="stat-label">Transparent Scoring</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">10+</div>
+    <div class="stat-label">Company Drive Presets</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">10</div>
+    <div class="stat-label">AI Questions Per Round</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">0-100</div>
+    <div class="stat-label">ATS Compatibility Audit</div>
+  </div>
+</div>
+
+<!-- 4 Core Pillars Feature Grid -->
+<div class="features-grid">
+  <div class="feature-card">
+    <div class="feature-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+    <h3 style="font-family: var(--font-serif); font-size: 22px; color: var(--floral-white); margin-bottom: 10px;">1. Skill-Gap Evaluation</h3>
+    <p style="font-size: 14.5px; color: var(--bone); opacity: 0.85; line-height: 1.6;">
+      Extract technical requirements from job descriptions and cross-evaluate your resume to discover matched skills, partial competencies, and critical missing gaps.
+    </p>
+  </div>
+
+  <div class="feature-card">
+    <div class="feature-icon"><i class="fa-solid fa-route"></i></div>
+    <h3 style="font-family: var(--font-serif); font-size: 22px; color: var(--floral-white); margin-bottom: 10px;">2. AI Learning Roadmap</h3>
+    <p style="font-size: 14.5px; color: var(--bone); opacity: 0.85; line-height: 1.6;">
+      Get a week-by-week sequence of missing skills to master, complete with hands-on practice tasks, objective checkboxes, and AI weekly expansion.
+    </p>
+  </div>
+
+  <div class="feature-card">
+    <div class="feature-icon"><i class="fa-solid fa-building-user"></i></div>
+    <h3 style="font-family: var(--font-serif); font-size: 22px; color: var(--floral-white); margin-bottom: 10px;">3. 360° Company Interview Pack</h3>
+    <p style="font-size: 14.5px; color: var(--bone); opacity: 0.85; line-height: 1.6;">
+      Fetch 10 company-tailored interview questions for TCS, Streebo, Crest Data Systems, Google, Amazon, or custom placement drives with attached study resources.
+    </p>
+  </div>
+
+  <div class="feature-card">
+    <div class="feature-icon"><i class="fa-solid fa-user-doctor"></i></div>
+    <h3 style="font-family: var(--font-serif); font-size: 22px; color: var(--floral-white); margin-bottom: 10px;">4. ATS Resume Doctor</h3>
+    <p style="font-size: 14.5px; color: var(--bone); opacity: 0.85; line-height: 1.6;">
+      Audit your resume against automated ATS screeners, discover missing keywords, and copy high-impact quantified STAR-formatted bullet points.
+    </p>
+  </div>
+</div>
+{% endblock %}

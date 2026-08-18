@@ -1,0 +1,874 @@
+{% extends 'base.html' %}
+
+{% block title %}Editorial Assistant{% endblock %}
+
+{% block styles %}
+<style>
+  .app-layout {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 16px 20px 20px 20px;
+  }
+
+  /* Header Bar */
+  .chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 28px;
+    margin-bottom: 16px;
+    flex-shrink: 0;
+    border-bottom: 2px solid var(--olive-drab);
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .brand-logo-small {
+    width: 44px;
+    height: 44px;
+    background: rgba(86, 84, 73, 0.4);
+    border: 1px solid var(--bone);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--floral-white);
+    box-shadow: 0 0 20px rgba(216, 207, 188, 0.25);
+  }
+
+  .header-title-group h1 {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--floral-white);
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--bone);
+    opacity: 0.9;
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    background: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #10b981;
+    animation: pulseDot 2s infinite;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .user-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: rgba(86, 84, 73, 0.2);
+    border: 1px solid var(--border-olive);
+    border-radius: 30px;
+    font-size: 14px;
+    color: var(--floral-white);
+    font-weight: 500;
+  }
+
+  .user-avatar {
+    width: 26px;
+    height: 26px;
+    background: var(--bone);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--smoky-black);
+    font-weight: 700;
+  }
+
+  .btn-header {
+    padding: 8px 18px;
+    background: rgba(86, 84, 73, 0.2);
+    border: 1px solid var(--border-olive);
+    border-radius: 30px;
+    color: var(--bone);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.25s ease;
+  }
+
+  .btn-header:hover {
+    background: var(--bone);
+    color: var(--smoky-black);
+    border-color: var(--floral-white);
+    transform: translateY(-1px);
+  }
+
+  /* Main Chat Box */
+  .chat-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .messages-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    scroll-behavior: smooth;
+  }
+
+  /* Empty State Hero */
+  .empty-hero {
+    margin: auto;
+    text-align: center;
+    max-width: 580px;
+    padding: 40px 20px;
+    animation: fadeIn 0.8s ease forwards;
+  }
+
+  .empty-icon {
+    width: 76px;
+    height: 76px;
+    background: rgba(86, 84, 73, 0.25);
+    border: 1px solid var(--bone);
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    color: var(--floral-white);
+    margin-bottom: 22px;
+    box-shadow: 0 0 35px rgba(216, 207, 188, 0.15);
+  }
+
+  .empty-title {
+    font-family: var(--font-serif);
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--floral-white);
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+  }
+
+  .empty-subtitle {
+    font-size: 15px;
+    color: var(--bone);
+    opacity: 0.8;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  .suggestions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 14px;
+  }
+
+  .suggestion-card {
+    background: rgba(86, 84, 73, 0.15);
+    border: 1px solid var(--border-olive);
+    border-radius: 14px;
+    padding: 16px 18px;
+    font-size: 13.5px;
+    color: var(--floral-white);
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .suggestion-card:hover {
+    background: rgba(216, 207, 188, 0.15);
+    border-color: var(--bone);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  }
+
+  .suggestion-card i {
+    color: var(--bone);
+    opacity: 0.6;
+    transition: all 0.2s ease;
+  }
+
+  .suggestion-card:hover i {
+    opacity: 1;
+    transform: translateX(3px);
+  }
+
+  /* Message Items & Bubbles */
+  .message-item {
+    display: flex;
+    gap: 16px;
+    max-width: 88%;
+    animation: messageSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .message-item.sent {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+  }
+
+  .message-item.received {
+    align-self: flex-start;
+  }
+
+  .msg-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .sent .msg-avatar {
+    background: var(--bone);
+    color: var(--smoky-black);
+    font-weight: 700;
+  }
+
+  .received .msg-avatar {
+    background: var(--olive-drab);
+    border: 1px solid var(--bone);
+    color: var(--floral-white);
+  }
+
+  .msg-bubble-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0; /* Ensures proper overflow wrapping */
+  }
+
+  .msg-header {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--bone);
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .sent .msg-header {
+    justify-content: flex-end;
+  }
+
+  .msg-bubble {
+    padding: 16px 20px;
+    border-radius: 18px;
+    font-size: 15px;
+    line-height: 1.7;
+    word-break: break-word;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  }
+
+  .sent .msg-bubble {
+    background: var(--olive-drab);
+    color: var(--floral-white);
+    border-bottom-right-radius: 4px;
+    border: 1px solid rgba(216, 207, 188, 0.2);
+  }
+
+  .received .msg-bubble {
+    background: rgba(28, 29, 25, 0.95);
+    border: 1px solid var(--border-olive);
+    color: var(--bone);
+    border-bottom-left-radius: 4px;
+  }
+
+  /* Structured Markdown Styling inside Received Bubbles */
+  .received .msg-bubble h1,
+  .received .msg-bubble h2,
+  .received .msg-bubble h3 {
+    font-family: var(--font-serif);
+    color: var(--floral-white);
+    margin-top: 14px;
+    margin-bottom: 8px;
+  }
+
+  .received .msg-bubble h1 { font-size: 20px; border-bottom: 1px solid var(--border-olive); padding-bottom: 4px; }
+  .received .msg-bubble h2 { font-size: 18px; }
+  .received .msg-bubble h3 { font-size: 16px; }
+
+  .received .msg-bubble p {
+    margin-bottom: 10px;
+  }
+  .received .msg-bubble p:last-child {
+    margin-bottom: 0;
+  }
+
+  .received .msg-bubble ul,
+  .received .msg-bubble ol {
+    margin-left: 20px;
+    margin-bottom: 12px;
+  }
+
+  .received .msg-bubble li {
+    margin-bottom: 4px;
+  }
+
+  .received .msg-bubble strong {
+    color: var(--floral-white);
+    font-weight: 700;
+  }
+
+  .received .msg-bubble code {
+    font-family: var(--font-code);
+    background: rgba(86, 84, 73, 0.4);
+    color: var(--floral-white);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13.5px;
+  }
+
+  .received .msg-bubble pre {
+    background: #090a07 !important;
+    border: 1px solid var(--border-olive);
+    border-radius: 10px;
+    padding: 14px;
+    margin: 12px 0;
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .received .msg-bubble pre code {
+    background: transparent !important;
+    padding: 0;
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+
+  .msg-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .message-item:hover .msg-actions {
+    opacity: 1;
+  }
+
+  .btn-copy {
+    background: transparent;
+    border: none;
+    color: var(--bone);
+    opacity: 0.7;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .btn-copy:hover {
+    opacity: 1;
+    color: var(--floral-white);
+  }
+
+  /* Animated Typing Indicator */
+  .typing-bubble {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 18px 24px;
+  }
+
+  .typing-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--bone);
+    border-radius: 50%;
+    animation: bounceDot 1.4s infinite ease-in-out both;
+  }
+
+  .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+  .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+  /* Floating Input Dock */
+  .chat-input-dock {
+    padding: 18px 28px;
+    border-top: 1px solid var(--border-olive);
+    background: rgba(17, 18, 13, 0.7);
+    flex-shrink: 0;
+  }
+
+  .input-glass-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(28, 29, 25, 0.95);
+    border: 1px solid var(--border-olive);
+    border-radius: 30px;
+    padding: 8px 10px 8px 24px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .input-glass-bar:focus-within {
+    border-color: var(--bone);
+    box-shadow: 0 0 0 3px var(--bone-glow), 0 15px 40px rgba(0, 0, 0, 0.5);
+  }
+
+  .chat-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--floral-white);
+    font-family: inherit;
+    font-size: 15px;
+    padding: 8px 0;
+  }
+
+  .chat-input::placeholder {
+    color: var(--bone);
+    opacity: 0.5;
+  }
+
+  .btn-send {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--bone);
+    border: none;
+    color: var(--smoky-black);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 15px rgba(216, 207, 188, 0.3);
+    flex-shrink: 0;
+  }
+
+  .btn-send:hover {
+    background: var(--floral-white);
+    transform: scale(1.06);
+    box-shadow: 0 6px 20px rgba(255, 251, 244, 0.4);
+  }
+
+  .btn-send:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Keyframe Animations */
+  @keyframes messageSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pulseDot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  @keyframes bounceDot {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @media (max-width: 640px) {
+    .app-layout { padding: 8px; }
+    .chat-header { padding: 14px 18px; }
+    .message-item { max-width: 94%; }
+    .messages-scroll { padding: 16px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="app-layout">
+  <!-- Header Bar -->
+  <header class="glass-card chat-header">
+    <div class="header-brand">
+      <div class="brand-logo-small">
+        <i class="fa-solid fa-feather-pointed"></i>
+      </div>
+      <div class="header-title-group">
+        <h1>Editorial AI Assistant</h1>
+        <div class="status-badge">
+          <span class="status-dot"></span>
+          <span>Active & Ready</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      {% if user.is_authenticated %}
+        <div class="user-pill">
+          <div class="user-avatar">
+            {{ user.username|slice:":1"|upper }}
+          </div>
+          <span>{{ user.username }}</span>
+        </div>
+        <a href="logout" class="btn-header">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      {% else %}
+        <a href="login" class="btn-header">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span>Login</span>
+        </a>
+        <a href="register" class="btn-header" style="background: var(--bone); color: var(--smoky-black); border: none;">
+          <i class="fa-solid fa-user-plus"></i>
+          <span>Register</span>
+        </a>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- Main Chat Container -->
+  <main class="glass-card chat-box">
+    <div class="messages-scroll" id="messagesScroll">
+      
+      {% if not chats %}
+        <!-- Empty State Hero -->
+        <div class="empty-hero" id="emptyHero">
+          <div class="empty-icon">
+            <i class="fa-solid fa-compass-drafting"></i>
+          </div>
+          <h2 class="empty-title">What would you like to create?</h2>
+          <p class="empty-subtitle">Ask any question or pick a prompt below to start a structured, intelligent session.</p>
+
+          <div class="suggestions-grid">
+            <div class="suggestion-card" onclick="useSuggestion('Explain quantum computing in simple terms with key bullet points')">
+              <span>Explain quantum computing simply with bullet points</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+            <div class="suggestion-card" onclick="useSuggestion('Write a clean Python script for automated file sorting')">
+              <span>Write a clean Python script for file sorting</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+            <div class="suggestion-card" onclick="useSuggestion('Draft a professional email for a project proposal')">
+              <span>Draft a professional email for a project proposal</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+            <div class="suggestion-card" onclick="useSuggestion('Compare REST API vs GraphQL in a structured table format')">
+              <span>Compare REST API vs GraphQL in a table</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Message History List -->
+      {% for chat in chats %}
+        {% if chat.user == request.user %}
+          <!-- User Sent Message -->
+          <div class="message-item sent">
+            <div class="msg-avatar">
+              {{ request.user.username|slice:":1"|upper }}
+            </div>
+            <div class="msg-bubble-container">
+              <div class="msg-header">You</div>
+              <div class="msg-bubble">{{ chat.message }}</div>
+            </div>
+          </div>
+
+          <!-- AI Received Message -->
+          <div class="message-item received">
+            <div class="msg-avatar">
+              <i class="fa-solid fa-robot"></i>
+            </div>
+            <div class="msg-bubble-container">
+              <div class="msg-header">AI Assistant</div>
+              <div class="msg-bubble markdown-content" data-raw="{{ chat.response }}">
+                {{ chat.response }}
+              </div>
+              <div class="msg-actions">
+                <button class="btn-copy" onclick="copyText(this)">
+                  <i class="fa-regular fa-copy"></i> Copy Response
+                </button>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+
+    </div>
+
+    <!-- Floating Input Dock -->
+    <div class="chat-input-dock">
+      <form class="message-form" id="messageForm">
+        {% csrf_token %}
+        <div class="input-glass-bar">
+          <input type="text" class="chat-input message-input" id="messageInput" placeholder="Type your prompt here..." autocomplete="off" required>
+          <button type="submit" class="btn-send" id="btnSend" title="Send message">
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+
+<script>
+  const messagesScroll = document.getElementById('messagesScroll');
+  const messageForm = document.getElementById('messageForm');
+  const messageInput = document.getElementById('messageInput');
+  const btnSend = document.getElementById('btnSend');
+  const emptyHero = document.getElementById('emptyHero');
+
+  // Configure Marked.js options
+  if (typeof marked !== 'undefined') {
+    marked.setOptions({
+      gfm: true,
+      breaks: true,
+      highlight: function(code, lang) {
+        if (typeof hljs !== 'undefined') {
+          const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+          return hljs.highlight(code, { language }).value;
+        }
+        return code;
+      }
+    });
+  }
+
+  // Parse existing markdown messages on page load
+  document.querySelectorAll('.markdown-content').forEach(element => {
+    const rawText = element.getAttribute('data-raw') || element.innerText;
+    if (typeof marked !== 'undefined') {
+      element.innerHTML = marked.parse(rawText);
+    }
+    // Highlight syntax inside pre code
+    if (typeof hljs !== 'undefined') {
+      element.querySelectorAll('pre code').forEach(block => {
+        hljs.highlightElement(block);
+      });
+    }
+  });
+
+  // Auto-scroll to bottom
+  function scrollToBottom() {
+    messagesScroll.scrollTo({
+      top: messagesScroll.scrollHeight,
+      behavior: 'smooth'
+    });
+  }
+
+  window.addEventListener('load', () => {
+    scrollToBottom();
+  });
+
+  // Suggestion click handler
+  function useSuggestion(text) {
+    messageInput.value = text;
+    messageInput.focus();
+    messageForm.dispatchEvent(new Event('submit'));
+  }
+
+  // Copy text handler
+  function copyText(btn) {
+    const bubble = btn.closest('.msg-bubble-container').querySelector('.msg-bubble');
+    if (bubble) {
+      navigator.clipboard.writeText(bubble.innerText).then(() => {
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+        }, 2000);
+      });
+    }
+  }
+
+  // Typewriter Streaming Animation for AI Response
+  function typeWriterEffect(element, htmlContent, onComplete) {
+    element.innerHTML = htmlContent;
+    
+    // Highlight syntax after inserting parsed markdown
+    if (typeof hljs !== 'undefined') {
+      element.querySelectorAll('pre code').forEach(block => {
+        hljs.highlightElement(block);
+      });
+    }
+
+    if (onComplete) onComplete();
+  }
+
+  // AJAX Submission
+  messageForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const message = messageInput.value.trim();
+    if (message.length === 0) return;
+
+    if (emptyHero) {
+      emptyHero.style.display = 'none';
+    }
+
+    // Append User Bubble
+    const userMsgItem = document.createElement('div');
+    userMsgItem.classList.add('message-item', 'sent');
+    userMsgItem.innerHTML = `
+      <div class="msg-avatar">
+        ${ '{{ request.user.username|default:"U"|slice:":1"|upper }}' }
+      </div>
+      <div class="msg-bubble-container">
+        <div class="msg-header">You</div>
+        <div class="msg-bubble">${escapeHtml(message)}</div>
+      </div>
+    `;
+    messagesScroll.appendChild(userMsgItem);
+
+    // Append Typing Indicator Bubble
+    const typingItem = document.createElement('div');
+    typingItem.classList.add('message-item', 'received');
+    typingItem.id = 'typingIndicator';
+    typingItem.innerHTML = `
+      <div class="msg-avatar">
+        <i class="fa-solid fa-robot"></i>
+      </div>
+      <div class="msg-bubble-container">
+        <div class="msg-header">AI Assistant is thinking...</div>
+        <div class="msg-bubble typing-bubble">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+      </div>
+    `;
+    messagesScroll.appendChild(typingItem);
+    scrollToBottom();
+
+    // Disable input while waiting
+    messageInput.value = '';
+    messageInput.disabled = true;
+    btnSend.disabled = true;
+    btnSend.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+    // Fetch AJAX
+    fetch('', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        'message': message
+      })
+    })
+    .then(async response => {
+      if (!response.ok) {
+        const errText = await response.text().catch(() => '');
+        throw new Error(`Server status ${response.status}: ${errText.substring(0, 150) || 'Unable to process request'}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      const indicator = document.getElementById('typingIndicator');
+      if (indicator) indicator.remove();
+
+      // Create AI Response Bubble
+      const aiMsgItem = document.createElement('div');
+      aiMsgItem.classList.add('message-item', 'received');
+      
+      const parsedMarkdown = (typeof marked !== 'undefined') ? marked.parse(data.response) : escapeHtml(data.response);
+
+      aiMsgItem.innerHTML = `
+        <div class="msg-avatar">
+          <i class="fa-solid fa-robot"></i>
+        </div>
+        <div class="msg-bubble-container">
+          <div class="msg-header">AI Assistant</div>
+          <div class="msg-bubble markdown-content"></div>
+          <div class="msg-actions">
+            <button class="btn-copy" onclick="copyText(this)">
+              <i class="fa-regular fa-copy"></i> Copy Response
+            </button>
+          </div>
+        </div>
+      `;
+      messagesScroll.appendChild(aiMsgItem);
+
+      const targetBubble = aiMsgItem.querySelector('.markdown-content');
+      typeWriterEffect(targetBubble, parsedMarkdown, () => {
+        scrollToBottom();
+      });
+    })
+    .catch(error => {
+      const indicator = document.getElementById('typingIndicator');
+      if (indicator) indicator.remove();
+
+      const errorMsgItem = document.createElement('div');
+      errorMsgItem.classList.add('message-item', 'received');
+      errorMsgItem.innerHTML = `
+        <div class="msg-avatar" style="background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.5); color: #fca5a5;">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <div class="msg-bubble-container">
+          <div class="msg-header">System Notice</div>
+          <div class="msg-bubble" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #fca5a5;">
+            ${escapeHtml(error.message || 'Failed to send message. Please refresh or try again.')}
+          </div>
+        </div>
+      `;
+      messagesScroll.appendChild(errorMsgItem);
+      scrollToBottom();
+    })
+    .finally(() => {
+      messageInput.disabled = false;
+      btnSend.disabled = false;
+      btnSend.innerHTML = '<i class="fa-solid fa-paper-plane"></i>';
+      messageInput.focus();
+    });
+  });
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.innerText = text;
+    return div.innerHTML.replace(/\n/g, '<br>');
+  }
+</script>
+{% endblock %}

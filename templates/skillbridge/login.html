@@ -1,0 +1,48 @@
+{% extends 'skillbridge/base.html' %}
+
+{% block title %}Sign In | SkillBridge{% endblock %}
+
+{% block content %}
+<div style="min-height: calc(100vh - 200px); display: flex; align-items: center; justify-content: center;">
+  <div class="glass-panel" style="width: 100%; max-width: 420px; padding: 40px 36px; position: relative;">
+    <!-- Simple Top Icon & Heading -->
+    <div style="text-align: center; margin-bottom: 28px;">
+      <div style="width: 52px; height: 52px; background: rgba(86, 84, 73, 0.35); border: 1px solid var(--bone); border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 22px; color: var(--floral-white); margin-bottom: 14px;">
+        <i class="fa-solid fa-user-lock"></i>
+      </div>
+      <h1 style="font-family: var(--font-serif); font-size: 28px; font-weight: 600; color: var(--floral-white); margin-bottom: 4px;">Sign In</h1>
+      <p style="font-size: 13.5px; color: var(--bone); opacity: 0.8;">Enter your account credentials to continue</p>
+    </div>
+
+    <!-- Login Form -->
+    <form method="post">
+      {% csrf_token %}
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; font-size: 11.5px; font-weight: 700; color: var(--bone); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Username</label>
+        <div style="position: relative;">
+          <input type="text" name="username" id="loginUsername" placeholder="Enter your username" required style="width: 100%; padding: 13px 16px 13px 44px; background: rgba(17, 18, 13, 0.9); border: 1px solid var(--border-olive); border-radius: 12px; color: var(--floral-white); font-family: inherit; font-size: 14px; outline: none;">
+          <i class="fa-solid fa-user" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--bone); opacity: 0.7;"></i>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 24px;">
+        <label style="display: block; font-size: 11.5px; font-weight: 700; color: var(--bone); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Password</label>
+        <div style="position: relative;">
+          <input type="password" name="password" id="loginPassword" placeholder="••••••••" required style="width: 100%; padding: 13px 16px 13px 44px; background: rgba(17, 18, 13, 0.9); border: 1px solid var(--border-olive); border-radius: 12px; color: var(--floral-white); font-family: inherit; font-size: 14px; outline: none;">
+          <i class="fa-solid fa-lock" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--bone); opacity: 0.7;"></i>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-nav-primary" style="width: 100%; padding: 14px; border: none; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <span>Sign In</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </form>
+
+    <!-- Toggle Link -->
+    <div style="text-align: center; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border-olive); font-size: 13.5px; color: var(--bone); opacity: 0.85;">
+      Don't have an account? <a href="{% url 'sb_register' %}" style="color: var(--floral-white); font-weight: 700; text-decoration: underline;">Create Account</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,287 @@
+{% extends 'skillbridge/base.html' %}
+
+{% block title %}AI Personal Skill Roadmap{% endblock %}
+
+{% block styles %}
+<style>
+  .roadmap-timeline {
+    position: relative; padding-left: 32px; border-left: 2px dashed var(--border-olive); margin-left: 16px;
+  }
+
+  .roadmap-item-card {
+    background: var(--smoky-glass); border: 1px solid var(--border-olive); border-radius: 18px; padding: 24px;
+    margin-bottom: 24px; position: relative; transition: all 0.25s ease;
+  }
+  .roadmap-item-card:hover { border-color: var(--bone); }
+
+  .timeline-dot {
+    position: absolute; left: -42px; top: 28px; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--smoky-black); border: 3px solid var(--bone);
+  }
+  .timeline-dot.completed { background: #10b981; border-color: #a7f3d0; }
+  .timeline-dot.in_progress { background: #f59e0b; border-color: #fde68a; }
+
+  .badge-phase {
+    padding: 4px 12px; background: rgba(86, 84, 73, 0.3); border: 1px solid var(--border-olive);
+    border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--bone); letter-spacing: 0.5px;
+  }
+
+  .status-btn {
+    padding: 8px 16px; border-radius: 20px; font-size: 12.5px; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s ease;
+  }
+  .btn-not_started { background: rgba(86, 84, 73, 0.3); color: var(--bone); border: 1px solid var(--border-olive); }
+  .btn-in_progress { background: rgba(245, 158, 11, 0.25); color: #fde68a; border: 1px solid rgba(245, 158, 11, 0.4); }
+  .btn-completed { background: rgba(16, 185, 129, 0.25); color: #a7f3d0; border: 1px solid rgba(16, 185, 129, 0.4); }
+
+  .btn-prep-link {
+    padding: 8px 16px; background: rgba(216, 207, 188, 0.15); border: 1px solid var(--bone);
+    border-radius: 20px; color: var(--floral-white); font-size: 12.5px; font-weight: 600; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;
+  }
+  .btn-prep-link:hover { background: var(--bone); color: var(--smoky-black); }
+
+  .company-chip {
+    padding: 3px 10px; background: rgba(216, 207, 188, 0.1); border: 1px solid rgba(216, 207, 188, 0.2);
+    border-radius: 12px; font-size: 11px; color: var(--bone); display: inline-flex; align-items: center; gap: 4px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 960px; margin: 0 auto;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+    <div>
+      <h1 style="font-family: var(--font-serif); font-size: 32px; color: var(--floral-white); margin-bottom: 6px;">
+        AI Personal Skill Roadmap
+      </h1>
+      <p style="font-size: 14.5px; color: var(--bone); opacity: 0.8;">
+        Target Position: <strong>{{ roadmap.analysis.job_description.title|default:"Python Developer" }}</strong>
+      </p>
+    </div>
+
+    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+      <a href="{% url 'sb_interview_prep' %}" class="btn-nav-primary" style="padding: 10px 18px; font-size: 13px; background: rgba(216, 207, 188, 0.2); color: var(--floral-white); border: 1px solid var(--bone);">
+        <i class="fa-solid fa-comments"></i> Practice Interview Questions
+      </a>
+      {% if roadmap %}
+        <button onclick="expandRoadmap({{ roadmap.id }})" id="btnExpand" class="btn-nav-primary" style="padding: 10px 18px; font-size: 13px;">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> AI Expand Roadmap (+3 Advanced Weeks)
+        </button>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Multi-Position Evaluation Selector Bar -->
+  {% if all_analyses %}
+    <div class="glass-panel" style="margin-bottom: 24px; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; background: rgba(17, 18, 13, 0.85);">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <i class="fa-solid fa-layer-group" style="font-size: 22px; color: var(--bone);"></i>
+        <div>
+          <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--bone); opacity: 0.7;">Active Position Selection</span>
+          <h4 style="font-family: var(--font-serif); font-size: 16px; color: var(--floral-white);">Switch Between Analyzed Positions</h4>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <select id="positionSelect" onchange="onPositionSelectChange(this)" style="padding: 10px 16px; background: rgba(86, 84, 73, 0.3); border: 1px solid var(--border-olive); border-radius: 12px; color: var(--floral-white); outline: none; font-size: 13.5px;">
+          {% for a in all_analyses %}
+            <option value="{% url 'sb_roadmap_detail' a.id %}" {% if roadmap and roadmap.analysis.id == a.id %}selected{% endif %}>
+              {{ a.job_description.title }} (Evaluated {{ a.created_at|date:"M d" }} - Score: {{ a.readiness_score }}/100)
+            </option>
+          {% endfor %}
+        </select>
+        <a href="{% url 'sb_analyze' %}" class="btn-nav-primary" style="padding: 8px 16px; font-size: 12.5px;">
+          <i class="fa-solid fa-plus"></i> Analyze New Position
+        </a>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if roadmap %}
+    <!-- Roadmap Progress Overview Header -->
+    <div class="glass-panel" style="margin-bottom: 32px; padding: 24px; border-color: var(--bone); background: rgba(216, 207, 188, 0.08);">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--bone); opacity: 0.8;">Roadmap Completion Progress</span>
+          <h3 style="font-family: var(--font-serif); font-size: 26px; color: var(--floral-white); margin-top: 4px;">
+            {{ roadmap.get_completion_percentage }}% Completed
+          </h3>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 24px;">
+          <div style="text-align: center;">
+            <div style="font-size: 12px; opacity: 0.7;">Completed Tasks</div>
+            <div style="font-family: var(--font-serif); font-size: 24px; font-weight: 700; color: #a7f3d0;">
+              {{ completed_count }}/{{ total_count }}
+            </div>
+          </div>
+
+          <div style="height: 36px; width: 1px; background: var(--border-olive);"></div>
+
+          <div style="text-align: center;">
+            <div style="font-size: 12px; opacity: 0.7;">Est. Remaining Hours</div>
+            <div style="font-family: var(--font-serif); font-size: 24px; font-weight: 700; color: var(--floral-white);">
+              {{ remaining_hours }} hrs
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div style="width: 100%; height: 8px; background: rgba(86, 84, 73, 0.3); border-radius: 4px; overflow: hidden; margin-top: 16px;">
+        <div style="width: {{ roadmap.get_completion_percentage }}%; height: 100%; background: var(--bone); transition: width 0.4s ease;"></div>
+      </div>
+    </div>
+
+    <!-- Timeline Items -->
+    <div class="roadmap-timeline">
+      {% for item in items %}
+        <div class="roadmap-item-card">
+          <div class="timeline-dot {{ item.status }}"></div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span class="badge-phase">Phase {{ item.phase_number }}</span>
+              <span style="font-size: 13px; color: var(--bone); opacity: 0.8;"><i class="fa-solid fa-clock"></i> {{ item.estimated_hours }} Hours</span>
+            </div>
+
+            <form method="post" action="{% url 'sb_roadmap' %}" style="display: inline;">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="toggle_status">
+              <input type="hidden" name="item_id" value="{{ item.id }}">
+              <button type="submit" class="status-btn btn-{{ item.status }}">
+                {% if item.status == 'completed' %}
+                  <i class="fa-solid fa-circle-check"></i> Completed
+                {% elif item.status == 'in_progress' %}
+                  <i class="fa-solid fa-spinner fa-spin"></i> In Progress
+                {% else %}
+                  <i class="fa-solid fa-circle"></i> Mark In Progress
+                {% endif %}
+              </button>
+            </form>
+          </div>
+
+          <h3 style="font-size: 19px; color: var(--floral-white); margin-bottom: 8px;">{{ item.title }}</h3>
+          <p style="font-size: 14px; color: var(--bone); opacity: 0.9; margin-bottom: 16px; line-height: 1.6;">{{ item.description }}</p>
+
+          <!-- Action Hub -->
+          <div style="display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 10px; padding-top: 14px; border-top: 1px solid rgba(86, 84, 73, 0.3);">
+            <button type="button" onclick="loadResources({{ item.id }}, '{{ item.title|escapejs }}')" class="btn-prep-link" style="background: rgba(86, 84, 73, 0.3); border-color: var(--border-olive);">
+              <i class="fa-solid fa-book-bookmark"></i> Study Resources
+            </button>
+            <a href="{% url 'sb_interview_prep' %}" class="btn-prep-link">
+              <i class="fa-solid fa-comments"></i> Practice Questions for this Skill
+            </a>
+          </div>
+
+          <!-- Resources Dropdown Panel -->
+          <div id="resourcesPanel_{{ item.id }}" style="display: none; margin-top: 16px; padding: 16px; background: rgba(17, 18, 13, 0.8); border: 1px solid var(--border-olive); border-radius: 12px;">
+            <h4 style="font-family: var(--font-serif); font-size: 15px; color: var(--floral-white); margin-bottom: 10px;"><i class="fa-solid fa-graduation-cap"></i> Recommended Study Resources</h4>
+            <div id="resourcesList_{{ item.id }}" style="font-size: 13.5px; color: var(--bone); opacity: 0.9;">Loading resources...</div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="glass-panel" style="text-align: center; padding: 60px;">
+      <i class="fa-solid fa-route" style="font-size: 44px; color: var(--bone); margin-bottom: 16px;"></i>
+      <h3 style="font-family: var(--font-serif); font-size: 24px; color: var(--floral-white); margin-bottom: 8px;">No Active Roadmap Found</h3>
+      <p style="font-size: 14px; color: var(--bone); opacity: 0.8; margin-bottom: 24px;">Start a Career Gap Analysis to generate your personalized learning roadmap.</p>
+      <a href="{% url 'sb_analyze' %}" class="btn-nav-primary" style="padding: 12px 28px;">Start Analysis Now</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function onPositionSelectChange(selectEl) {
+    if (selectEl.value) {
+      window.location.href = selectEl.value;
+    }
+  }
+
+  function expandRoadmap(roadmapId) {
+    const btn = document.getElementById('btnExpand');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating Advanced Weeks...';
+
+    fetch('{% url "sb_ajax_expand_roadmap" %}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: new URLSearchParams({ 'roadmap_id': roadmapId })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'success') {
+        window.location.reload();
+      }
+    });
+  }
+
+  function loadResources(itemId, itemTitle) {
+    const panel = document.getElementById('resourcesPanel_' + itemId);
+    const list = document.getElementById('resourcesList_' + itemId);
+
+    if (panel.style.display === 'block') {
+      panel.style.display = 'none';
+      return;
+    }
+
+    panel.style.display = 'block';
+    list.innerHTML = '<div style="padding: 12px;"><i class="fa-solid fa-spinner fa-spin"></i> Fetching AI curated documentation, tutorials & GitHub repositories...</div>';
+
+    fetch('{% url "sb_ajax_roadmap_resources" %}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: new URLSearchParams({ 'item_id': itemId, 'skill': itemTitle || '' })
+    })
+    .then(res => res.json())
+    .then(data => {
+      let itemsList = [];
+      if (Array.isArray(data.resources) && data.resources.length > 0) {
+        itemsList = data.resources;
+      } else if (data.documentation || data.video_courses) {
+        if (data.documentation) data.documentation.forEach(d => itemsList.push({...d, type: 'Documentation'}));
+        if (data.video_courses) data.video_courses.forEach(v => itemsList.push({...v, type: 'Tutorial'}));
+        if (data.github_repos) data.github_repos.forEach(g => itemsList.push({...g, type: 'GitHub'}));
+        if (data.practice_platforms) data.practice_platforms.forEach(p => itemsList.push({...p, type: 'Practice'}));
+      }
+
+      if (itemsList.length > 0) {
+        let html = '<div style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">';
+        itemsList.forEach(r => {
+          let badgeColor = r.type === 'Documentation' ? '#60a5fa' : (r.type === 'GitHub' ? '#c084fc' : (r.type === 'Tutorial' ? '#f87171' : '#34d399'));
+          html += `
+            <div style="padding: 12px 16px; background: rgba(86, 84, 73, 0.25); border: 1px solid var(--border-olive); border-radius: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                  <span style="padding: 2px 8px; background: rgba(255,255,255,0.1); border-radius: 8px; font-size: 10px; font-weight: 700; color: ${badgeColor}; text-transform: uppercase;">${r.type || 'Resource'}</span>
+                  <strong style="color: var(--floral-white); font-size: 14px;">${r.title}</strong>
+                </div>
+                ${r.description ? `<p style="font-size: 12px; color: var(--bone); opacity: 0.8; margin: 0;">${r.description}</p>` : ''}
+              </div>
+              <a href="${r.url}" target="_blank" class="btn-prep-link" style="padding: 6px 14px; font-size: 12px; background: var(--bone); color: var(--smoky-black); font-weight: 700;">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Resource
+              </a>
+            </div>
+          `;
+        });
+        html += '</div>';
+        list.innerHTML = html;
+      } else {
+        list.innerHTML = '<div style="padding: 12px; color: var(--bone); opacity: 0.8;">Standard Reference: Practice building REST API endpoints and writing automated unit tests.</div>';
+      }
+    })
+    .catch(err => {
+      list.innerHTML = '<div style="padding: 12px; color: #fca5a5;">Failed to load resources. Please try again.</div>';
+    });
+  }
+</script>
+{% endblock %}

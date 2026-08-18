@@ -1,0 +1,339 @@
+{% extends 'skillbridge/base.html' %}
+
+{% block title %}Executive Career Dashboard{% endblock %}
+
+{% block styles %}
+<style>
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .dash-container { animation: fadeInUp 0.4s ease-out; }
+
+  .dash-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 28px; flex-wrap: wrap; gap: 20px;
+    padding-bottom: 20px; border-bottom: 1px solid var(--border-olive);
+  }
+
+  .dash-title {
+    font-family: var(--font-serif); font-size: 32px; color: var(--floral-white);
+    margin-bottom: 4px; letter-spacing: -0.5px;
+  }
+
+  .dash-sub { font-size: 14px; color: var(--bone); opacity: 0.85; line-height: 1.5; }
+
+  /* Metric Stat Cards */
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--smoky-glass); border: 1px solid var(--border-olive); border-radius: 20px; padding: 24px;
+    display: flex; align-items: center; gap: 20px; box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); text-decoration: none; color: inherit; position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+    background: var(--bone); opacity: 0; transition: opacity 0.3s ease;
+  }
+  .stat-card:hover {
+    border-color: var(--bone); transform: translateY(-3px); box-shadow: 0 18px 40px rgba(0,0,0,0.5);
+  }
+  .stat-card:hover::before { opacity: 1; }
+
+  .stat-icon {
+    width: 52px; height: 52px; background: rgba(86, 84, 73, 0.35); border: 1px solid var(--bone);
+    border-radius: 16px; display: flex; align-items: center; justify-content: center;
+    font-size: 22px; color: var(--floral-white); flex-shrink: 0; transition: transform 0.3s ease;
+  }
+  .stat-card:hover .stat-icon { transform: scale(1.08); }
+
+  .stat-label {
+    font-size: 11.5px; font-weight: 700; text-transform: uppercase; color: var(--bone);
+    opacity: 0.75; margin-bottom: 4px; letter-spacing: 0.6px;
+  }
+  .stat-value {
+    font-family: var(--font-serif); font-size: 28px; font-weight: 700; color: var(--floral-white);
+  }
+
+  /* Action Launchpad Grid */
+  .action-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px; margin-bottom: 32px;
+  }
+  .action-card {
+    background: rgba(86, 84, 73, 0.18); border: 1px solid var(--border-olive); border-radius: 18px; padding: 20px 16px;
+    text-align: center; text-decoration: none; color: var(--floral-white); transition: all 0.25s ease; position: relative;
+  }
+  .action-card:hover {
+    background: rgba(216, 207, 188, 0.15); border-color: var(--bone); transform: translateY(-3px);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.4);
+  }
+  .action-icon {
+    font-size: 26px; color: var(--bone); margin-bottom: 10px; transition: transform 0.3s ease;
+  }
+  .action-card:hover .action-icon { transform: scale(1.15); }
+  .action-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: var(--floral-white); }
+  .action-sub { font-size: 11.5px; color: var(--bone); opacity: 0.75; }
+
+  /* Charts & Content Grid */
+  .grid-two {
+    display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 32px;
+  }
+  @media (max-width: 900px) { .grid-two { grid-template-columns: 1fr; } }
+
+  .chart-card {
+    background: var(--smoky-glass); border: 1px solid var(--border-olive); border-radius: 22px; padding: 28px;
+    box-shadow: 0 16px 36px rgba(0,0,0,0.4);
+  }
+  .card-head {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;
+    padding-bottom: 14px; border-bottom: 1px solid var(--border-olive);
+  }
+  .card-head-title { font-family: var(--font-serif); font-size: 20px; color: var(--floral-white); }
+
+  /* Evaluation List Item */
+  .recent-item {
+    padding: 20px; background: rgba(86, 84, 73, 0.15); border: 1px solid var(--border-olive);
+    border-radius: 16px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px; transition: all 0.25s ease;
+  }
+  .recent-item:hover { border-color: var(--bone); background: rgba(216, 207, 188, 0.08); transform: translateX(3px); }
+
+  .recent-score-badge {
+    padding: 6px 14px; background: var(--bone); color: var(--smoky-black); font-weight: 700;
+    border-radius: 20px; font-size: 14px; letter-spacing: 0.5px;
+  }
+  
+  .btn-sm-action {
+    padding: 7px 16px; background: rgba(216, 207, 188, 0.15); border: 1px solid var(--border-olive);
+    border-radius: 14px; color: var(--floral-white); font-size: 12.5px; text-decoration: none; font-weight: 600;
+    transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-sm-action:hover { background: var(--bone); color: var(--smoky-black); transform: translateY(-1px); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dash-container">
+  <!-- Header Banner -->
+  <div class="dash-header">
+    <div>
+      <h1 class="dash-title">Welcome back, {{ profile.full_name|default:user.username }}</h1>
+      <p class="dash-sub">
+        Target Role: <strong>{{ profile.target_role }}</strong>
+        {% if latest_analysis %}| Active Position: <strong>{{ latest_analysis.job_description.title }}</strong> (Readiness Score: <strong>{{ current_readiness }}/100</strong>){% endif %}
+      </p>
+    </div>
+
+    <a href="{% url 'sb_analyze' %}" class="btn-nav-primary" style="padding: 13px 26px;">
+      <i class="fa-solid fa-wand-magic-sparkles"></i> Execute New Gap Analysis
+    </a>
+  </div>
+
+  <!-- Live Counter Metric Cards -->
+  <div class="stats-grid">
+    {% if latest_analysis %}
+      <a href="{% url 'sb_analysis_detail' latest_analysis.id %}" class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+        <div>
+          <div class="stat-label">Overall Readiness</div>
+          <div class="stat-value">{{ current_readiness }}/100</div>
+        </div>
+      </a>
+    {% else %}
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+        <div>
+          <div class="stat-label">Overall Readiness</div>
+          <div class="stat-value">0/100</div>
+        </div>
+      </div>
+    {% endif %}
+
+    <a href="{% url 'sb_analyze' %}" class="stat-card">
+      <div class="stat-icon"><i class="fa-solid fa-shield-halved" style="color: #10b981;"></i></div>
+      <div>
+        <div class="stat-label">Matched vs Gap Skills</div>
+        <div class="stat-value">{{ matched_skills_count }} / {{ missing_skills_count }}</div>
+      </div>
+    </a>
+
+    <a href="{% url 'sb_roadmap' %}" class="stat-card">
+      <div class="stat-icon"><i class="fa-solid fa-bars-staggered"></i></div>
+      <div>
+        <div class="stat-label">Milestones Completed</div>
+        <div class="stat-value">{{ completed_items_count }}/{{ total_items_count }}</div>
+      </div>
+    </a>
+
+    <a href="{% url 'sb_interview_prep' %}" class="stat-card">
+      <div class="stat-icon"><i class="fa-solid fa-comments"></i></div>
+      <div>
+        <div class="stat-label">Interview Questions</div>
+        <div class="stat-value">{{ interview_questions_count }}</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Connected Module Launchpad -->
+  <div class="action-grid">
+    <a href="{% url 'sb_analyze' %}" class="action-card">
+      <div class="action-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+      <div class="action-title">Career Gap Analysis</div>
+      <div class="action-sub">Resume vs Job Audit</div>
+    </a>
+
+    <a href="{% url 'sb_roadmap' %}" class="action-card">
+      <div class="action-icon"><i class="fa-solid fa-route"></i></div>
+      <div class="action-title">Personal Roadmap</div>
+      <div class="action-sub">{{ roadmap_progress }}% Completed</div>
+    </a>
+
+    <a href="{% url 'sb_interview_prep' %}" class="action-card">
+      <div class="action-icon"><i class="fa-solid fa-comments"></i></div>
+      <div class="action-title">Interview Hub</div>
+      <div class="action-sub">Company & 360° Drills</div>
+    </a>
+
+    <a href="{% url 'sb_resume' %}" class="action-card">
+      <div class="action-icon"><i class="fa-solid fa-file-contract"></i></div>
+      <div class="action-title">ATS Resume Doctor</div>
+      <div class="action-sub">Keywords & Impact Bullets</div>
+    </a>
+
+    <a href="{% url 'sb_history' %}" class="action-card">
+      <div class="action-icon"><i class="fa-solid fa-chart-line-up"></i></div>
+      <div class="action-title">Progression History</div>
+      <div class="action-sub">Score Growth Diffs</div>
+    </a>
+  </div>
+
+  <!-- Visual Analytics Section -->
+  <div class="grid-two">
+    <div class="chart-card">
+      <div class="card-head">
+        <h3 class="card-head-title">Job Readiness Growth Trajectory</h3>
+      </div>
+      <div style="height: 260px;">
+        <canvas id="trendChart"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="card-head">
+        <h3 class="card-head-title">Milestone Completion Ratio</h3>
+      </div>
+      <div style="height: 260px; display: flex; align-items: center; justify-content: center;">
+        <canvas id="progressChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Saved Position Evaluations List -->
+  <div class="chart-card">
+    <div class="card-head">
+      <div>
+        <h3 class="card-head-title">Saved Position Evaluations</h3>
+        <p style="font-size: 13px; color: var(--bone); opacity: 0.8; margin-top: 2px;">
+          Select active roadmaps and practice company interviews across your target positions
+        </p>
+      </div>
+      <a href="{% url 'sb_history' %}" style="color: var(--bone); font-size: 13px; text-decoration: underline; font-weight: 600;">
+        Full Progression History &rarr;
+      </a>
+    </div>
+
+    {% if recent_analyses %}
+      {% for item in recent_analyses %}
+        <div class="recent-item">
+          <div>
+            <div style="font-weight: 700; color: var(--floral-white); font-size: 16.5px;">{{ item.job_description.title }}</div>
+            <div style="font-size: 12.5px; color: var(--bone); opacity: 0.75; margin-top: 3px;">
+              Evaluated {{ item.created_at|date:"M d, Y" }} | Status: <strong>{{ item.get_score_label }}</strong>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <span class="recent-score-badge">{{ item.readiness_score }}/100</span>
+
+            <a href="{% url 'sb_analysis_detail' item.id %}" class="btn-sm-action">
+              <i class="fa-solid fa-chart-pie"></i> Report
+            </a>
+
+            <a href="{% url 'sb_roadmap_detail' item.id %}" class="btn-sm-action" style="background: rgba(86, 84, 73, 0.4);">
+              <i class="fa-solid fa-route"></i> Roadmap
+            </a>
+
+            <a href="{% url 'sb_interview_prep_detail' item.id %}" class="btn-sm-action">
+              <i class="fa-solid fa-comments"></i> Interview Prep
+            </a>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div style="text-align: center; padding: 48px; color: var(--bone); opacity: 0.75;">
+        <i class="fa-solid fa-folder-open" style="font-size: 36px; margin-bottom: 12px;"></i>
+        <p>No position evaluations completed yet. Click <strong>"Execute New Gap Analysis"</strong> to get started!</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Chart 1: Job Readiness Progression Line Chart
+  const trendCtx = document.getElementById('trendChart').getContext('2d');
+  const trendChart = new Chart(trendCtx, {
+    type: 'line',
+    data: {
+      labels: {{ chart_labels_json|safe }},
+      datasets: [{
+        label: 'Job Readiness Score',
+        data: {{ chart_data_json|safe }},
+        borderColor: '#D8CFBC',
+        backgroundColor: 'rgba(216, 207, 188, 0.15)',
+        fill: true,
+        tension: 0.35,
+        pointBackgroundColor: '#FFFBF4',
+        pointBorderColor: '#D8CFBC',
+        pointRadius: 6,
+        pointHoverRadius: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: { min: 0, max: 100, grid: { color: 'rgba(86, 84, 73, 0.2)' }, ticks: { color: '#D8CFBC' } },
+        x: { grid: { color: 'rgba(86, 84, 73, 0.2)' }, ticks: { color: '#D8CFBC' } }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  // Chart 2: Milestone Completion Doughnut Chart
+  const progressCtx = document.getElementById('progressChart').getContext('2d');
+  const progressChart = new Chart(progressCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Completed Milestones', 'Remaining Milestones'],
+      datasets: [{
+        data: [{{ completed_items_count|default:0 }}, {{ remaining_items_count|default:1 }}],
+        backgroundColor: ['#D8CFBC', 'rgba(86, 84, 73, 0.3)'],
+        borderColor: '#11120D',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#D8CFBC', font: { family: 'Inter' } } }
+      }
+    }
+  });
+</script>
+{% endblock %}

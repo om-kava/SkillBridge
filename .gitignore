@@ -1,0 +1,22 @@
+# Byte-compiled / pycache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment Secrets & Local Database
+.env
+db.sqlite3
+staticfiles/
+media/resumes/
+
+# Logs & OS files
+*.log
+.DS_Store
+.vscode
+.idea/
+
+# Virtual Environments
+.venv
+env/
+venv/
+ENV/

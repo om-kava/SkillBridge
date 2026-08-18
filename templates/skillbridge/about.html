@@ -1,0 +1,49 @@
+{% extends 'skillbridge/base.html' %}
+
+{% block title %}About SkillBridge{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto; text-align: center;">
+  <!-- Simple Header -->
+  <div class="glass-panel" style="padding: 44px 36px; margin-bottom: 32px; background: rgba(216, 207, 188, 0.06); border-color: var(--bone);">
+    <div style="width: 54px; height: 54px; background: rgba(86, 84, 73, 0.35); border: 1px solid var(--bone); border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 24px; color: var(--floral-white); margin-bottom: 20px;">
+      <i class="fa-solid fa-compass-drafting"></i>
+    </div>
+    
+    <h1 style="font-family: var(--font-serif); font-size: 36px; color: var(--floral-white); margin-bottom: 14px;">
+      About SkillBridge
+    </h1>
+    
+    <p style="font-size: 16px; color: var(--bone); opacity: 0.9; line-height: 1.7; max-width: 680px; margin: 0 auto;">
+      SkillBridge is an intuitive career readiness platform that helps students and software candidates analyze their job description alignment, build step-by-step learning roadmaps, and practice real company interview questions.
+    </p>
+  </div>
+
+  <!-- 3 Simple Overview Pillars -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; text-align: left;">
+    <div class="glass-panel" style="padding: 24px;">
+      <i class="fa-solid fa-bullseye" style="font-size: 24px; color: var(--bone); margin-bottom: 12px;"></i>
+      <h3 style="font-family: var(--font-serif); font-size: 19px; color: var(--floral-white); margin-bottom: 8px;">1. Skill-Gap Analysis</h3>
+      <p style="font-size: 13.5px; color: var(--bone); opacity: 0.85; line-height: 1.6;">
+        Upload your resume and paste target job descriptions to calculate a transparent 0-100 readiness score and identify missing skills.
+      </p>
+    </div>
+
+    <div class="glass-panel" style="padding: 24px;">
+      <i class="fa-solid fa-route" style="font-size: 24px; color: var(--bone); margin-bottom: 12px;"></i>
+      <h3 style="font-family: var(--font-serif); font-size: 19px; color: var(--floral-white); margin-bottom: 8px;">2. AI Learning Roadmap</h3>
+      <p style="font-size: 13.5px; color: var(--bone); opacity: 0.85; line-height: 1.6;">
+        Follow a week-by-week sequence of study milestones with direct links to documentation, tutorials, and practical exercise tasks.
+      </p>
+    </div>
+
+    <div class="glass-panel" style="padding: 24px;">
+      <i class="fa-solid fa-comments" style="font-size: 24px; color: var(--bone); margin-bottom: 12px;"></i>
+      <h3 style="font-family: var(--font-serif); font-size: 19px; color: var(--floral-white); margin-bottom: 8px;">3. Company Interview Prep</h3>
+      <p style="font-size: 13.5px; color: var(--bone); opacity: 0.85; line-height: 1.6;">
+        Practice 10 round-specific interview questions for top companies (TCS, Streebo, Google, Amazon) with an interactive AI Mock Coach.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

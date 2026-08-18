@@ -1,0 +1,175 @@
+{% extends 'skillbridge/base.html' %}
+
+{% block title %}Executive Analysis Report | {{ analysis.job_description.title }}{% endblock %}
+
+{% block styles %}
+<style>
+  .result-header {
+    background: var(--smoky-glass); border: 1px solid var(--border-bone); border-radius: 24px; padding: 36px;
+    margin-bottom: 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 28px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.4); position: relative; overflow: hidden;
+  }
+
+  .score-circle-outer {
+    position: relative; width: 140px; height: 140px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(86, 84, 73, 0.4) 0%, rgba(17, 18, 13, 0.9) 80%);
+    border: 4px solid var(--bone); display: flex; flex-direction: column; align-items: center; justify-content: center;
+    box-shadow: 0 0 40px rgba(216, 207, 188, 0.3); flex-shrink: 0;
+  }
+  .score-num { font-family: var(--font-serif); font-size: 44px; font-weight: 700; color: var(--floral-white); line-height: 1; }
+  .score-denom { font-size: 13px; color: var(--bone); opacity: 0.75; margin-top: 4px; font-weight: 600; }
+
+  .skill-section-title {
+    font-family: var(--font-serif); font-size: 22px; color: var(--floral-white); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border-olive);
+  }
+
+  .skill-badge {
+    display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 20px; font-size: 13.5px; font-weight: 600; margin: 4px;
+    transition: all 0.2s ease;
+  }
+  .skill-badge:hover { transform: translateY(-1px); }
+  .badge-matched { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: #a7f3d0; }
+  .badge-partial { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fde68a; }
+  .badge-missing { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; }
+
+  .gap-card {
+    background: rgba(86, 84, 73, 0.18); border: 1px solid var(--border-olive); border-radius: 16px; padding: 20px; margin-bottom: 16px;
+    transition: all 0.2s ease;
+  }
+  .gap-card:hover { border-color: var(--bone); background: rgba(216, 207, 188, 0.08); }
+
+  .verdict-tag {
+    padding: 6px 18px; border-radius: 20px; font-weight: 700; font-size: 13.5px; letter-spacing: 0.5px;
+    background: rgba(216, 207, 188, 0.2); color: var(--floral-white); border: 1px solid var(--bone);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 1060px; margin: 0 auto;">
+  <!-- Executive Result Header -->
+  <div class="result-header">
+    <div>
+      <span style="font-size: 12px; font-weight: 700; color: var(--bone); opacity: 0.75; text-transform: uppercase; letter-spacing: 1px;">
+        Career Gap Evaluation Report #{{ analysis.id }}
+      </span>
+      <h1 style="font-family: var(--font-serif); font-size: 36px; color: var(--floral-white); margin-top: 4px; margin-bottom: 10px;">
+        {{ analysis.job_description.title }}
+      </h1>
+      
+      <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+        <span style="font-size: 13.5px; color: var(--bone); opacity: 0.85;">
+          <i class="fa-regular fa-calendar" style="margin-right: 6px;"></i> Assessed {{ analysis.created_at|date:"F d, Y" }}
+        </span>
+        <span style="color: var(--border-olive);">•</span>
+        <span class="verdict-tag"><i class="fa-solid fa-award" style="margin-right: 6px;"></i> {{ analysis.get_score_label }}</span>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 24px;">
+      <div class="score-circle-outer">
+        <span class="score-num">{{ analysis.readiness_score }}</span>
+        <span class="score-denom">/ 100</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Executive Summary -->
+  <div class="glass-panel" style="margin-bottom: 32px;">
+    <h3 class="skill-section-title"><i class="fa-solid fa-lightbulb" style="color: var(--bone);"></i> Executive Placement & Readiness Assessment</h3>
+    <p style="font-size: 15.5px; line-height: 1.7; color: var(--bone); opacity: 0.95;">
+      {{ analysis.summary }}
+    </p>
+  </div>
+
+  <!-- Categorized Technical Competency Breakdown -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 32px;">
+    <!-- Matched & Partial Skills Card -->
+    <div class="glass-panel">
+      <h3 class="skill-section-title">
+        <i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Matched Technical Competencies
+      </h3>
+      
+      <div style="margin-bottom: 24px;">
+        <label style="display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--bone); opacity: 0.7; margin-bottom: 10px;">
+          Verified Resume Skills (Exact Match):
+        </label>
+        <div>
+          {% for s in matched_skills %}
+            <span class="skill-badge badge-matched"><i class="fa-solid fa-check"></i> {{ s.skill.name }}</span>
+          {% empty %}
+            <p style="font-size: 13.5px; color: var(--bone); opacity: 0.7;">No exact match skills identified.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      {% if partial_skills %}
+        <div>
+          <label style="display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--bone); opacity: 0.7; margin-bottom: 10px;">
+            Partially Demonstrated Skills:
+          </label>
+          <div>
+            {% for s in partial_skills %}
+              <span class="skill-badge badge-partial"><i class="fa-solid fa-code-compare"></i> {{ s.skill.name }}</span>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Critical Skill Gaps Card -->
+    <div class="glass-panel">
+      <h3 class="skill-section-title">
+        <i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> Identified Critical Skill Gaps
+      </h3>
+
+      {% if missing_skills %}
+        {% for s in missing_skills %}
+          <div class="gap-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+              <span style="font-weight: 700; color: var(--floral-white); font-size: 15.5px;">
+                <i class="fa-solid fa-xmark" style="color: #ef4444; margin-right: 6px;"></i> {{ s.skill.name }}
+              </span>
+              <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 3px 10px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 12px; color: #fca5a5;">
+                Priority {{ s.priority }}
+              </span>
+            </div>
+            <p style="font-size: 13.5px; color: var(--bone); opacity: 0.9; margin-bottom: 4px; line-height: 1.5;">
+              {{ s.recommendation }}
+            </p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div style="padding: 24px; text-align: center; color: #a7f3d0;">
+          <i class="fa-solid fa-circle-check" style="font-size: 32px; margin-bottom: 10px;"></i>
+          <p style="font-size: 15px; font-weight: 600;">Outstanding! No major missing skills detected for this target position.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Connected Placement Launchpad Buttons -->
+  <div class="glass-panel" style="text-align: center; padding: 28px; background: rgba(216, 207, 188, 0.06); border-color: var(--bone);">
+    <h3 style="font-family: var(--font-serif); font-size: 20px; color: var(--floral-white); margin-bottom: 16px;">
+      Next Steps for Placement Mastery
+    </h3>
+
+    <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+      {% if roadmap %}
+        <a href="{% url 'sb_roadmap_detail' analysis.id %}" class="btn-nav-primary" style="padding: 13px 28px; font-size: 14px;">
+          <i class="fa-solid fa-route"></i> View Personal Learning Roadmap
+        </a>
+      {% endif %}
+
+      <a href="{% url 'sb_interview_prep_detail' analysis.id %}" class="btn-nav-primary" style="padding: 13px 28px; font-size: 14px; background: rgba(86, 84, 73, 0.4); color: var(--floral-white); border: 1px solid var(--border-olive);">
+        <i class="fa-solid fa-comments"></i> Practice Company Interview Questions
+      </a>
+
+      <a href="{% url 'sb_export_pdf' analysis.id %}" target="_blank" class="btn-nav-primary" style="padding: 13px 28px; font-size: 14px; background: rgba(216, 207, 188, 0.2); color: var(--floral-white); border: 1px solid var(--bone);">
+        <i class="fa-solid fa-file-pdf"></i> Export Executive PDF Report
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
