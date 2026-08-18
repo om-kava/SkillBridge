@@ -38,6 +38,11 @@
     from { opacity: 0; transform: scale(0.92); }
     to { opacity: 1; transform: scale(1); }
   }
+
+  @media (max-width: 768px) {
+    .analyze-grid { grid-template-columns: 1fr !important; }
+    .analyzing-card { padding: 24px 16px; }
+  }
 </style>
 {% endblock %}
 

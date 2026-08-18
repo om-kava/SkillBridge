@@ -112,6 +112,17 @@
     transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px;
   }
   .btn-sm-action:hover { background: var(--bone); color: var(--smoky-black); transform: translateY(-1px); }
+
+  @media (max-width: 768px) {
+    .dash-title { font-size: 24px; }
+    .dash-header { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .stats-grid { grid-template-columns: 1fr; gap: 12px; }
+    .action-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .action-card { padding: 14px 10px; }
+    .recent-item { flex-direction: column; align-items: flex-start; }
+    .recent-item > div:last-child { width: 100%; justify-content: space-between; }
+    .btn-sm-action { flex: 1; justify-content: center; }
+  }
 </style>
 {% endblock %}
 

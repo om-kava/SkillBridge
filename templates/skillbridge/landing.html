@@ -58,39 +58,57 @@
   }
   .stat-item { text-align: center; }
   .stat-num { font-family: var(--font-serif); font-size: 36px; font-weight: 700; color: var(--floral-white); line-height: 1; }
-  .stat-label { font-size: 12.5px; color: var(--bone); opacity: 0.8; margin-top: 6px; font-weight: 600; text-transform: uppercase; }
+  .stat-txt { font-size: 12.5px; color: var(--bone); opacity: 0.8; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-  /* Feature Grid */
-  .features-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 60px;
+  /* Feature Process Grid */
+  .process-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin-bottom: 70px;
   }
-  .feature-card {
-    background: var(--smoky-glass); border: 1px solid var(--border-olive); border-radius: 22px; padding: 32px 28px;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; overflow: hidden;
+  .process-card {
+    background: var(--smoky-glass); border: 1px solid var(--border-olive); border-radius: 22px; padding: 32px 24px;
+    text-align: left; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; overflow: hidden;
   }
-  .feature-card:hover {
-    border-color: var(--bone); transform: translateY(-4px); box-shadow: 0 20px 45px rgba(0,0,0,0.6);
-  }
-  .feature-icon {
-    width: 52px; height: 52px; background: rgba(86, 84, 73, 0.35); border: 1px solid var(--bone);
-    border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--floral-white); margin-bottom: 20px;
+  .process-card:hover {
+    border-color: var(--bone); transform: translateY(-6px); box-shadow: 0 22px 45px rgba(0,0,0,0.6);
   }
 
-  @keyframes pulseGlow { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
-  @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .card-num {
+    width: 44px; height: 44px; background: rgba(86, 84, 73, 0.4); border: 1px solid var(--bone);
+    border-radius: 14px; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-serif); font-size: 20px; font-weight: 700; color: var(--floral-white); margin-bottom: 20px;
+  }
+
+  .card-title {
+    font-family: var(--font-serif); font-size: 22px; font-weight: 600; color: var(--floral-white); margin-bottom: 10px;
+  }
+
+  .card-desc {
+    font-size: 14px; color: var(--bone); opacity: 0.85; line-height: 1.6;
+  }
+
+  @media (max-width: 768px) {
+    .hero-container { padding: 40px 10px 30px 10px; }
+    .hero-title { font-size: 32px; letter-spacing: -0.5px; }
+    .hero-subtitle { font-size: 15px; margin-bottom: 28px; }
+    .stats-banner { grid-template-columns: 1fr 1fr; padding: 18px 12px; gap: 14px; }
+    .stat-num { font-size: 28px; }
+    .stat-txt { font-size: 11px; }
+    .hero-ctas { flex-direction: column; width: 100%; gap: 12px; }
+    .btn-hero-primary, .btn-hero-secondary { width: 100%; justify-content: center; padding: 14px 24px; font-size: 15px; }
+    .process-grid { grid-template-columns: 1fr; gap: 16px; }
+  }
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
 <div class="hero-container">
   <div class="pulse-badge">
-    <span class="pulse-dot"></span>
-    <span>AI Career Placement & Skill-Gap Intelligence Engine</span>
+    <div class="pulse-dot"></div>
+    <span>Career Intelligence & Skill-Gap Analysis System</span>
   </div>
 
   <h1 class="hero-title">
-    Bridge the gap between your resume and campus placement success.
+    Bridge the Gap Between Your Resume & Your Target Career Goal
   </h1>
   
   <p class="hero-subtitle">
@@ -99,68 +117,68 @@
 
   <div class="hero-ctas">
     <a href="{% if user.is_authenticated %}{% url 'sb_analyze' %}{% else %}{% url 'sb_register' %}{% endif %}" class="btn-hero-primary">
-      <span>Analyze Career Readiness</span>
+      <span>Start Free Career Analysis</span>
       <i class="fa-solid fa-arrow-right"></i>
     </a>
     <a href="{% url 'sb_about' %}" class="btn-hero-secondary">
       <i class="fa-solid fa-circle-info"></i>
-      <span>Explore Platform Architecture</span>
+      <span>Learn How It Works</span>
     </a>
   </div>
-</div>
 
-<!-- Stats Counter Banner -->
-<div class="stats-banner">
-  <div class="stat-item">
-    <div class="stat-num">100%</div>
-    <div class="stat-label">Transparent Scoring</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">10+</div>
-    <div class="stat-label">Company Drive Presets</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">10</div>
-    <div class="stat-label">AI Questions Per Round</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">0-100</div>
-    <div class="stat-label">ATS Compatibility Audit</div>
-  </div>
-</div>
-
-<!-- 4 Core Pillars Feature Grid -->
-<div class="features-grid">
-  <div class="feature-card">
-    <div class="feature-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
-    <h3 style="font-family: var(--font-serif); font-size: 22px; color: var(--floral-white); margin-bottom: 10px;">1. Skill-Gap Evaluation</h3>
-    <p style="font-size: 14.5px; color: var(--bone); opacity: 0.85; line-height: 1.6;">
-      Extract technical requirements from job descriptions and cross-evaluate your resume to discover matched skills, partial competencies, and critical missing gaps.
-    </p>
+  <!-- Metric Counter Banner -->
+  <div class="stats-banner">
+    <div class="stat-item">
+      <div class="stat-num">100%</div>
+      <div class="stat-txt">Transparent Scoring</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">10+</div>
+      <div class="stat-txt">Company Drive Presets</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">10</div>
+      <div class="stat-txt">AI Questions Per Round</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">0-100</div>
+      <div class="stat-txt">ATS Compatibility Audit</div>
+    </div>
   </div>
 
-  <div class="feature-card">
-    <div class="feature-icon"><i class="fa-solid fa-route"></i></div>
-    <h3 style="font-family: var(--font-serif); font-size: 22px; color: var(--floral-white); margin-bottom: 10px;">2. AI Learning Roadmap</h3>
-    <p style="font-size: 14.5px; color: var(--bone); opacity: 0.85; line-height: 1.6;">
-      Get a week-by-week sequence of missing skills to master, complete with hands-on practice tasks, objective checkboxes, and AI weekly expansion.
-    </p>
-  </div>
+  <!-- 4-Pillar Process Overview -->
+  <div class="process-grid">
+    <div class="process-card">
+      <div class="card-num">01</div>
+      <h3 class="card-title">Skill-Gap Analysis</h3>
+      <p class="card-desc">
+        Upload your PDF/DOCX resume and paste target job descriptions to run 3-Layer skill matching and compute a documented 0-100 readiness rating.
+      </p>
+    </div>
 
-  <div class="feature-card">
-    <div class="feature-icon"><i class="fa-solid fa-building-user"></i></div>
-    <h3 style="font-family: var(--font-serif); font-size: 22px; color: var(--floral-white); margin-bottom: 10px;">3. 360° Company Interview Pack</h3>
-    <p style="font-size: 14.5px; color: var(--bone); opacity: 0.85; line-height: 1.6;">
-      Fetch 10 company-tailored interview questions for TCS, Streebo, Crest Data Systems, Google, Amazon, or custom placement drives with attached study resources.
-    </p>
-  </div>
+    <div class="process-card">
+      <div class="card-num">02</div>
+      <h3 class="card-title">AI Learning Roadmap</h3>
+      <p class="card-desc">
+        Receive a prioritized, week-by-week learning sequence with direct documentation links, practice exercises, and expandable milestone modules.
+      </p>
+    </div>
 
-  <div class="feature-card">
-    <div class="feature-icon"><i class="fa-solid fa-user-doctor"></i></div>
-    <h3 style="font-family: var(--font-serif); font-size: 22px; color: var(--floral-white); margin-bottom: 10px;">4. ATS Resume Doctor</h3>
-    <p style="font-size: 14.5px; color: var(--bone); opacity: 0.85; line-height: 1.6;">
-      Audit your resume against automated ATS screeners, discover missing keywords, and copy high-impact quantified STAR-formatted bullet points.
-    </p>
+    <div class="process-card">
+      <div class="card-num">03</div>
+      <h3 class="card-title">Company Interview Hub</h3>
+      <p class="card-desc">
+        Practice 10 round-specific interview questions tailored to top company drives (TCS, Streebo, Google, Amazon) with an interactive AI Mock Coach.
+      </p>
+    </div>
+
+    <div class="process-card">
+      <div class="card-num">04</div>
+      <h3 class="card-title">ATS Resume Doctor</h3>
+      <p class="card-desc">
+        Rewrite weak experience bullet points into high-impact STAR format and audit keyword coverage across multiple target engineering roles.
+      </p>
+    </div>
   </div>
 </div>
 {% endblock %}

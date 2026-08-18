@@ -44,6 +44,13 @@
     padding: 3px 10px; background: rgba(216, 207, 188, 0.1); border: 1px solid rgba(216, 207, 188, 0.2);
     border-radius: 12px; font-size: 11px; color: var(--bone); display: inline-flex; align-items: center; gap: 4px;
   }
+
+  @media (max-width: 768px) {
+    .roadmap-timeline { padding-left: 0; margin-left: 0; border-left: none; }
+    .timeline-dot { display: none; }
+    .roadmap-item-card { padding: 18px 14px; border-radius: 16px; }
+    .status-btn, .btn-prep-link { width: 100%; justify-content: center; text-align: center; }
+  }
 </style>
 {% endblock %}
 
