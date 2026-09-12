@@ -20,3 +20,7 @@ media/resumes/
 env/
 venv/
 ENV/
+
+# Personal local files
+*.pdf
+SkillBridge_Interview_Handbook.pdf

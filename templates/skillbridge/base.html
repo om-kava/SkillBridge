@@ -164,11 +164,18 @@
     }
     .nav-brand {
       display: flex; align-items: center; gap: 12px; text-decoration: none;
+      cursor: pointer; position: relative; z-index: 10;
     }
     .brand-logo {
       width: 40px; height: 40px; background: rgba(86, 84, 73, 0.4); border: 1px solid var(--bone);
       border-radius: 12px; display: flex; align-items: center; justify-content: center;
       color: var(--floral-white); font-size: 18px; box-shadow: 0 0 20px rgba(216, 207, 188, 0.2);
+      transition: all 0.25s ease;
+    }
+    .nav-brand:hover .brand-logo {
+      transform: scale(1.06);
+      border-color: var(--floral-white);
+      box-shadow: 0 0 25px rgba(255, 251, 244, 0.35);
     }
     .brand-title {
       font-family: var(--font-serif); font-size: 22px; font-weight: 700; color: var(--floral-white); letter-spacing: -0.3px;
@@ -286,6 +293,7 @@
         <li><a href="{% url 'sb_roadmap' %}" class="nav-link"><i class="fa-solid fa-route"></i> Roadmap</a></li>
         <li><a href="{% url 'sb_interview_prep' %}" class="nav-link"><i class="fa-solid fa-comments"></i> Interview Prep</a></li>
         <li><a href="{% url 'sb_history' %}" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+        <li><a href="{% url 'chatbot' %}" class="nav-link"><i class="fa-solid fa-robot"></i> AI Assistant</a></li>
         
         <!-- Profile Account Custom Dropdown Popover -->
         <li class="dropdown-container">
@@ -307,6 +315,9 @@
             <a href="{% url 'sb_history' %}" class="dropdown-item">
               <i class="fa-solid fa-clock-rotate-left"></i> Progression History
             </a>
+            <a href="{% url 'chatbot' %}" class="dropdown-item">
+              <i class="fa-solid fa-robot"></i> AI Career Assistant
+            </a>
             <div style="height: 1px; background: rgba(86, 84, 73, 0.3); margin: 6px 0;"></div>
             <a href="{% url 'sb_logout' %}" class="dropdown-item" style="color: #fca5a5;">
               <i class="fa-solid fa-right-from-bracket"></i> Sign Out
@@ -316,6 +327,7 @@
       {% else %}
         <li><a href="{% url 'sb_landing' %}" class="nav-link">Home</a></li>
         <li><a href="{% url 'sb_about' %}" class="nav-link">About</a></li>
+        <li><a href="{% url 'chatbot' %}" class="nav-link">AI Assistant</a></li>
         <li><a href="{% url 'sb_login' %}" class="nav-link">Sign In</a></li>
         <li><a href="{% url 'sb_register' %}" class="btn-nav-primary">Get Started <i class="fa-solid fa-arrow-right"></i></a></li>
       {% endif %}

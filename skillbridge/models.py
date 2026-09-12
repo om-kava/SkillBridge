@@ -104,6 +104,13 @@ class Roadmap(models.Model):
     total_estimated_hours = models.IntegerField(default=30)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def get_completion_percentage(self):
+        total = self.items.count()
+        if total == 0:
+            return 0
+        completed = self.items.filter(status='completed').count()
+        return int(round((completed / total) * 100))
+
     def __str__(self):
         return f"Roadmap for Analysis #{self.analysis.id}"
 
@@ -126,6 +133,10 @@ class RoadmapItem(models.Model):
     practice_task = models.TextField(blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='not_started')
     order = models.IntegerField(default=1)
+
+    @property
+    def phase_number(self):
+        return self.order
 
     def __str__(self):
         return f"Week {self.order}: {self.title} [{self.status}]"

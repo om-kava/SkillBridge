@@ -111,7 +111,7 @@
         <div>
           <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--bone); opacity: 0.8;">Roadmap Completion Progress</span>
           <h3 style="font-family: var(--font-serif); font-size: 26px; color: var(--floral-white); margin-top: 4px;">
-            {{ roadmap.get_completion_percentage }}% Completed
+            {{ roadmap.get_completion_percentage|default:0 }}% Completed
           </h3>
         </div>
 
@@ -136,7 +136,7 @@
 
       <!-- Progress Bar -->
       <div style="width: 100%; height: 8px; background: rgba(86, 84, 73, 0.3); border-radius: 4px; overflow: hidden; margin-top: 16px;">
-        <div style="width: {{ roadmap.get_completion_percentage }}%; height: 100%; background: var(--bone); transition: width 0.4s ease;"></div>
+        <div style="width: {{ roadmap.get_completion_percentage|default:0 }}%; height: 100%; background: var(--bone); transition: width 0.4s ease;"></div>
       </div>
     </div>
 

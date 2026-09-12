@@ -5,7 +5,7 @@
 {% block styles %}
 <style>
   .auth-wrapper {
-    min-height: 100vh;
+    min-height: calc(100vh - 80px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -200,9 +200,9 @@
 <div class="auth-wrapper">
   <div class="glass-card auth-card">
     <div class="brand-header">
-      <div class="brand-icon">
-        <i class="fa-solid fa-feather-pointed"></i>
-      </div>
+      <a href="{% url 'sb_landing' %}" class="brand-icon" title="Return to SkillBridge Home" style="text-decoration: none; cursor: pointer;">
+        <i class="fa-solid fa-compass-drafting"></i>
+      </a>
       <h1 class="brand-title">Welcome Back</h1>
       <p class="brand-subtitle">Sign in to your intelligent workspace</p>
     </div>
@@ -239,7 +239,7 @@
     </form>
 
     <div class="auth-footer">
-      Don't have an account? <a href="register">Create Account</a>
+      Don't have an account? <a href="{% url 'sb_register' %}">Create Account</a>
     </div>
   </div>
 </div>

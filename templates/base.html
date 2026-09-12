@@ -132,6 +132,116 @@
       .font-serif {
         font-family: var(--font-serif);
       }
+
+      /* Basic Navbar for Auth & Shared Pages */
+      .auth-navbar {
+        background: var(--smoky-glass);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border-olive);
+        padding: 14px 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .auth-nav-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .auth-brand-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(86, 84, 73, 0.4);
+        border: 1px solid var(--bone);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--floral-white);
+        font-size: 18px;
+        box-shadow: 0 0 20px rgba(216, 207, 188, 0.2);
+        transition: transform 0.2s ease;
+      }
+      .auth-nav-brand:hover .auth-brand-icon {
+        transform: scale(1.05);
+      }
+
+      .auth-brand-name {
+        font-family: var(--font-serif);
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--floral-white);
+        letter-spacing: -0.3px;
+      }
+
+      .auth-nav-links {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+
+      .auth-nav-item {
+        color: var(--bone);
+        text-decoration: none;
+        font-size: 13.5px;
+        font-weight: 500;
+        opacity: 0.85;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+      }
+
+      .auth-nav-item:hover {
+        color: var(--floral-white);
+        opacity: 1;
+        text-shadow: 0 0 10px rgba(255, 251, 244, 0.3);
+      }
+
+      .auth-nav-btn {
+        padding: 9px 20px;
+        background: var(--bone);
+        color: var(--smoky-black);
+        border-radius: 30px;
+        font-size: 13.5px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 15px rgba(216, 207, 188, 0.25);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .auth-nav-btn:hover {
+        background: var(--floral-white);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(255, 251, 244, 0.35);
+      }
+
+      @media (max-width: 640px) {
+        .auth-navbar {
+          padding: 12px 16px;
+        }
+        .auth-nav-links {
+          gap: 10px;
+        }
+        .auth-nav-item {
+          font-size: 12.5px;
+        }
+        .auth-nav-btn {
+          padding: 7px 14px;
+          font-size: 12.5px;
+        }
+      }
     </style>
     {% block styles %}{% endblock %}
   </head>
@@ -141,6 +251,31 @@
       <div class="glow-orb glow-orb-1"></div>
       <div class="glow-orb glow-orb-2"></div>
     </div>
+
+    <!-- Basic Navbar for Auth & Extension Pages -->
+    {% block navbar %}
+    <nav class="auth-navbar">
+      <a href="{% if user.is_authenticated %}{% url 'sb_dashboard' %}{% else %}{% url 'sb_landing' %}{% endif %}" class="auth-nav-brand" title="SkillBridge Home">
+        <div class="auth-brand-icon">
+          <i class="fa-solid fa-compass-drafting"></i>
+        </div>
+        <span class="auth-brand-name">SkillBridge</span>
+      </a>
+
+      <div class="auth-nav-links">
+        <a href="{% url 'sb_landing' %}" class="auth-nav-item"><i class="fa-solid fa-house"></i> Home</a>
+        <a href="{% url 'sb_about' %}" class="auth-nav-item"><i class="fa-solid fa-circle-info"></i> About</a>
+        <a href="{% url 'chatbot' %}" class="auth-nav-item"><i class="fa-solid fa-robot"></i> AI Assistant</a>
+        {% if user.is_authenticated %}
+          <a href="{% url 'sb_dashboard' %}" class="auth-nav-item"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+          <a href="{% url 'sb_logout' %}" class="auth-nav-item" style="color: #fca5a5;"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
+        {% else %}
+          <a href="{% url 'sb_login' %}" class="auth-nav-item">Sign In</a>
+          <a href="{% url 'sb_register' %}" class="auth-nav-btn">Get Started <i class="fa-solid fa-arrow-right"></i></a>
+        {% endif %}
+      </div>
+    </nav>
+    {% endblock %}
 
     {% block content %}{% endblock %}
 

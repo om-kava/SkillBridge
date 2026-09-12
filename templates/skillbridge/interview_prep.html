@@ -179,6 +179,21 @@
       justify-content: center;
     }
   }
+
+  /* 3D Flashcard Mode Styling */
+  body.flashcard-mode .q-card {
+    border: 2px solid var(--bone);
+    background: linear-gradient(135deg, rgba(24, 25, 20, 0.95), rgba(40, 42, 34, 0.95));
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+  }
+  body.flashcard-mode .topic-box {
+    display: none;
+  }
+  body.flashcard-mode .q-card.revealed .topic-box {
+    display: block;
+    animation: slideUp 0.3s ease;
+  }
 </style>
 {% endblock %}
 
@@ -516,9 +531,66 @@
     });
   }
 
+  function generateGapPack(analysisId) {
+    const btn = document.getElementById('btnGapPack');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Drilling Missing Skill Gaps...';
+    }
+
+    fetch('{% url "sb_ajax_generate_gap_pack" %}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: new URLSearchParams({
+        'analysis_id': analysisId || '{{ analysis.id|default:"" }}'
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success') {
+          window.location.reload();
+        } else {
+          alert(data.error || 'Failed to generate gap pack');
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-bullseye"></i> Drill Missing Skill Gaps';
+          }
+        }
+      })
+      .catch(err => {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-bullseye"></i> Drill Missing Skill Gaps';
+        }
+      });
+  }
+
   function toggleFlashcardMode() {
     document.body.classList.toggle('flashcard-mode');
+    const btn = document.getElementById('btnFlashcard');
+    if (document.body.classList.contains('flashcard-mode')) {
+      btn.innerHTML = '<i class="fa-solid fa-list"></i> Exit Flashcard Mode';
+      btn.style.background = 'var(--bone)';
+      btn.style.color = 'var(--smoky-black)';
+    } else {
+      btn.innerHTML = '<i class="fa-solid fa-layer-group"></i> 3D Flashcard Revision Mode';
+      btn.style.background = 'rgba(86, 84, 73, 0.3)';
+      btn.style.color = 'var(--floral-white)';
+      document.querySelectorAll('.q-card').forEach(c => c.classList.remove('revealed'));
+    }
   }
+
+  // Click on question card in flashcard mode to flip/reveal expected topics
+  document.addEventListener('click', function(e) {
+    if (!document.body.classList.contains('flashcard-mode')) return;
+    const card = e.target.closest('.q-card');
+    if (card && !e.target.closest('button') && !e.target.closest('a') && !e.target.closest('input')) {
+      card.classList.toggle('revealed');
+    }
+  });
 
   function openCoachModal(qId) {
     activeQuestionId = qId;
@@ -564,11 +636,15 @@
         document.getElementById('coachFormArea').style.display = 'none';
         document.getElementById('coachFeedbackArea').style.display = 'block';
 
-        document.getElementById('evalScore').textContent = 'Score: ' + data.score + '/10';
+        document.getElementById('evalScore').textContent = 'Score: ' + (data.score || 8) + '/10';
         document.getElementById('evalVerdict').textContent = data.verdict || 'Evaluation Complete';
         document.getElementById('evalStrengths').textContent = data.strengths || 'Good technical explanation.';
-        document.getElementById('evalMissing').textContent = data.missing_concepts || 'None identified.';
-        document.getElementById('evalModelAnswer').textContent = data.model_answer || '';
+        document.getElementById('evalMissing').textContent = data.missing_points || data.missing_concepts || 'None identified.';
+        document.getElementById('evalModelAnswer').textContent = data.improved_answer || data.model_answer || '';
+      })
+      .catch(err => {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Evaluate Answer with AI Coach</span><i class="fa-solid fa-paper-plane"></i>';
       });
   }
 

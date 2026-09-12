@@ -266,15 +266,17 @@
       // Bullet Cards
       const bulletsDiv = document.getElementById('docBullets');
       bulletsDiv.innerHTML = '';
-      (data.enhanced_bullet_points || []).forEach((b, idx) => {
+      (data.enhanced_bullet_points || []).forEach((b) => {
         const card = document.createElement('div');
         card.className = 'bullet-card';
-        card.innerHTML = `
-          <span>• ${b}</span>
-          <button class="btn-copy" onclick="copyText('${b.replace(/'/g, "\\'")}', this)">
-            <i class="fa-regular fa-copy"></i> Copy
-          </button>
-        `;
+        const textSpan = document.createElement('span');
+        textSpan.textContent = '• ' + b;
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'btn-copy';
+        copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+        copyBtn.addEventListener('click', () => copyText(b, copyBtn));
+        card.appendChild(textSpan);
+        card.appendChild(copyBtn);
         bulletsDiv.appendChild(card);
       });
 

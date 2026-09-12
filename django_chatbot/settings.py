@@ -52,7 +52,7 @@ ROOT_URLCONF = 'django_chatbot.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR, 'templates'],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -126,3 +126,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     )
 }
+
+# Authentication Redirect URLs
+LOGIN_URL = 'sb_login'
+LOGIN_REDIRECT_URL = 'sb_dashboard'
+LOGOUT_REDIRECT_URL = 'sb_landing'
+

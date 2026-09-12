@@ -529,13 +529,15 @@
 </style>
 {% endblock %}
 
+{% block navbar %}{% endblock %}
+
 {% block content %}
 <div class="app-layout">
   <!-- Header Bar -->
   <header class="glass-card chat-header">
-    <div class="header-brand">
+    <a href="{% if user.is_authenticated %}{% url 'sb_dashboard' %}{% else %}{% url 'sb_landing' %}{% endif %}" class="header-brand" title="Return to SkillBridge Home" style="text-decoration: none; cursor: pointer; color: inherit;">
       <div class="brand-logo-small">
-        <i class="fa-solid fa-feather-pointed"></i>
+        <i class="fa-solid fa-compass-drafting"></i>
       </div>
       <div class="header-title-group">
         <h1>Editorial AI Assistant</h1>
@@ -544,9 +546,13 @@
           <span>Active & Ready</span>
         </div>
       </div>
-    </div>
+    </a>
 
     <div class="header-actions">
+      <a href="{% if user.is_authenticated %}{% url 'sb_dashboard' %}{% else %}{% url 'sb_landing' %}{% endif %}" class="btn-header" title="Return to SkillBridge Home">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>SkillBridge</span>
+      </a>
       {% if user.is_authenticated %}
         <div class="user-pill">
           <div class="user-avatar">
@@ -554,16 +560,16 @@
           </div>
           <span>{{ user.username }}</span>
         </div>
-        <a href="logout" class="btn-header">
+        <a href="{% url 'sb_logout' %}" class="btn-header">
           <i class="fa-solid fa-right-from-bracket"></i>
           <span>Logout</span>
         </a>
       {% else %}
-        <a href="login" class="btn-header">
+        <a href="{% url 'sb_login' %}" class="btn-header">
           <i class="fa-solid fa-right-to-bracket"></i>
           <span>Login</span>
         </a>
-        <a href="register" class="btn-header" style="background: var(--bone); color: var(--smoky-black); border: none;">
+        <a href="{% url 'sb_register' %}" class="btn-header" style="background: var(--bone); color: var(--smoky-black); border: none;">
           <i class="fa-solid fa-user-plus"></i>
           <span>Register</span>
         </a>
