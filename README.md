@@ -66,16 +66,20 @@
 SkillBridge/
 ├── manage.py
 ├── Procfile
+├── build.sh
 ├── requirements.txt
 ├── .env.example
 ├── .gitignore
 ├── README.md
-├── SkillBridge_AI.pdf           # Master PRD Specification Document
 ├── django_chatbot/              # Project Configuration Package
 │   ├── settings.py              # Production-ready settings with WhiteNoise
 │   ├── urls.py                  # Root URL Router
 │   ├── wsgi.py                  # WSGI Application entrypoint
 │   └── asgi.py
+├── chatbot/                     # Editorial AI Assistant App
+│   ├── models.py
+│   ├── views.py
+│   └── urls.py
 ├── skillbridge/                 # Core SkillBridge Application App
 │   ├── models.py                # CareerProfile, Analysis, Roadmap, InterviewQuestion
 │   ├── views.py                 # Web Views & Controllers
@@ -85,22 +89,32 @@ SkillBridge/
 │   ├── scoring.py               # Documented Weighted Scoring Engine
 │   ├── pdf_service.py           # PDF Export Generator
 │   ├── serializers.py           # DRF Serializers
+│   ├── tests.py                 # Automated Test Suite (22 Tests)
 │   └── urls.py                  # SkillBridge Routing Table
-└── templates/                   # HTML Templates & View Components
-    └── skillbridge/
-        ├── base.html
-        ├── landing.html
-        ├── about.html
-        ├── login.html
-        ├── register.html
-        ├── dashboard.html
-        ├── profile.html
-        ├── analyze.html
-        ├── analysis_detail.html
-        ├── roadmap.html
-        ├── interview_prep.html
-        ├── resume.html
-        └── history.html
+├── templates/                   # HTML Templates & View Components
+│   ├── base.html                # Shared Master Luxury Layout
+│   ├── chatbot/                 # Chatbot Namespaced Templates
+│   │   ├── chatbot.html
+│   │   ├── login.html
+│   │   └── register.html
+│   └── skillbridge/             # SkillBridge Namespaced Templates
+│       ├── base.html
+│       ├── landing.html
+│       ├── about.html
+│       ├── login.html
+│       ├── register.html
+│       ├── dashboard.html
+│       ├── profile.html
+│       ├── analyze.html
+│       ├── analysis_detail.html
+│       ├── roadmap.html
+│       ├── interview_prep.html
+│       ├── resume.html
+│       └── history.html
+└── extra/                       # Offline Documentation & PRD Specs
+    ├── README.md
+    └── docs/
+        └── SkillBridge_AI.pdf   # Master PRD Specification Document
 ```
 
 ---

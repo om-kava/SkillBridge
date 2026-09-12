@@ -23,4 +23,6 @@ ENV/
 
 # Personal local files
 *.pdf
+!extra/docs/SkillBridge_AI.pdf
 SkillBridge_Interview_Handbook.pdf
+extra/docs/SkillBridge_Interview_Handbook.pdf
