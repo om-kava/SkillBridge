@@ -20,7 +20,22 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-wsa9k4v_goql%t8rn@q4*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 't')
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+allowed_hosts_env = os.environ.get('ALLOWED_HOSTS')
+if allowed_hosts_env:
+    ALLOWED_HOSTS = [h.strip() for h in allowed_hosts_env.split(',') if h.strip()]
+else:
+    ALLOWED_HOSTS = ['*']
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.onrender.com',
+    'https://*.render.com',
+    'http://127.0.0.1',
+    'http://localhost',
+]
+render_url = os.environ.get('RENDER_EXTERNAL_URL')
+if render_url:
+    CSRF_TRUSTED_ORIGINS.append(render_url)
+
 
 # Application definition
 INSTALLED_APPS = [
